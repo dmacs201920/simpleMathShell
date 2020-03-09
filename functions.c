@@ -474,13 +474,20 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 
 }
 
-/*dyna_var* operations(dyna_var *head,char **s)
+dyna_var* operations(dyna_var *head,char **s)
 {
-
-	if (s==NULL)
-		return 0;
-	int i=0;
 	dyna_var *temp;
+	for (int i=0;s[i];i++)
+	{
+		register char *x=s[i];
+		if (isalpha(*x))
+			temp=findDynaVariable (head,x);
+		else if (!isalpha(x))
+			printf("No variable: '%s' found.\nError 102\n",x);
+			return NULL;
+	}
+/*
+	int i=0;
 	int t1,t2,t3;
 	int *stack;
 	if((stack=(int*)malloc(25*sizeof(int)))==NULL)
@@ -588,8 +595,9 @@ dyna_var *temp1,*temp2,*result=NULL;
 
 	}
 	return result;
+	*/
 }
-*/
+
 
 dyna_var* callDynaVariable(dyna_var*head,char *x)
 {
@@ -609,8 +617,10 @@ dyna_var* findDynaVariable(dyna_var *head,char *x)
 	dyna_var *temp=head;
 	while(temp && temp->var!=x)
 		temp=temp->next;
-	return temp;
-
+	if (temp->var==x)
+		return temp;
+	else 
+		printf("Variable: %s not found\n",x);
 }
 
 void free_dyna_variables(dyna_var *head)

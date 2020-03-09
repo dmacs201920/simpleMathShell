@@ -11,7 +11,7 @@ functions.o: functions.c functionheader.h
 	gcc -c -g functions.c -lm 
 
 clean: 
-	rm -f *.o *~
+	rm -f *.o *~ chari
 
 #./a.out:
 #	gcc -g try.c

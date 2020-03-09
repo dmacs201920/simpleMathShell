@@ -83,8 +83,9 @@ here:
 					break;
 				case 8:
 					w=Infix_to_Suffix(t);
-					dyna_var *temp;//=operations(head,w);
-					display_dynamically_declared(temp);
+					dyna_var *temp=operations(head,w);
+					if (temp!=NULL)
+						display_dynamically_declared(temp);
 					break;
 
 				case 0:
