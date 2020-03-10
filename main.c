@@ -83,9 +83,8 @@ here:
 					break;
 				case 8:
 					w=Infix_to_Suffix(t);
-					dyna_var *temp=operations(head,w);
-					if (temp!=NULL)
-						display_dynamically_declared(temp);
+					int result=operations(head,w);
+					printf("~/cherry_shell/:)/>>> %d\n",result);
 					break;
 
 				case 0:

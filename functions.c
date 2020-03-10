@@ -455,6 +455,12 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 {
 	dyna_var *t=head,*temp=(dyna_var *)calloc(1,sizeof(dyna_var));
 	
+	if (!((65<=*x&&*x<=90)||(97<=*x&&*x<=122)))
+	{
+		printf("Enter only characters for defining variables!\nVariable: %s not defined\n",x);
+		return NULL;
+	}
+	
 	int l=strlen(x),m=strlen(value);
 
 	temp->var=malloc(l);
@@ -474,43 +480,33 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 
 }
 
-dyna_var* operations(dyna_var *head,char **s)
+int operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
-	for (int i=0;s[i];i++)
-	{
-		register char *x=s[i];
-		if (isalpha(*x))
-			temp=findDynaVariable (head,x);
-		else if (!isalpha(x))
-			printf("No variable: '%s' found.\nError 102\n",x);
-			return NULL;
-	}
-/*
-	int i=0;
 	int t1,t2,t3;
 	int *stack;
-	if((stack=(int*)malloc(25*sizeof(int)))==NULL)
+	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		return 0;
 	}
 	Initialize_Stack(stack);
-
-	while(*s[i])
+	
+	for (int i=0;*s[i]!='\0';i++)
 	{
-		temp=findDynaVariable(head,s[i]);
-
-		if (temp && isdigit(*(temp->value)))
+		register char *x=s[i];
+		if (isalpha(*x))
 		{
+			temp=findDynaVariable (head,x);
 			t3=atoi(temp->value);
 			Push(stack,t3);
 		}
-		else
+
+		else if (isalnum(*x))
 		{
 			t1=Pop(stack);
 			t2=Pop(stack);
-			switch(*temp)
+			switch(*x)
 			{
 				case '+':
 					Push(stack,t1+t2);
@@ -543,59 +539,15 @@ dyna_var* operations(dyna_var *head,char **s)
 						Push(stack,t2%t1);
 					break;
 				default:
-					printf("Operation not supported.\n");
+					printf("Variable: '%s' not supported .\nError 102\n",x);
+					return 0;
 					break;
 			}
 		}
-		i++;
-
 	}
 	int result=stack[0];
 	free(stack);
 	return result;
-}
-dyna_var *temp1,*temp2,*result=NULL;
-	
-	//temp1=callDynaVariable(head,x);
-	//temp2=callDynaVariable(head,y);
-
-	switch(*t)
-	{
-		case '+':
-			result->value=(atoi(temp1->value))+(atoi(temp2->value));
-			break;
-		case '-':
-			result->value=(atoi(temp1->value))-(atoi(temp2->value));
-			break;
-		case '*':
-			result->value=(atoi(temp1->value))*(atoi(temp2->value));
-			break;
-		case '/':
-			if (temp2->value==0)
-			{
-				printf("Division by zero!!!\n");
-				return 0;
-			}
-			result->value=(atoi(temp1->value))/(atoi(temp2->value));
-			break;
-		case '^':
-			result->value=power((atoi(temp1->value)),(atoi(temp2->value)));
-			break;
-		case '%':
-			if (temp2->value==0)
-			{
-				printf("Undefined operation!\n");
-				return 0;
-			}
-			result->value=(atoi(temp1->value))%(atoi(temp2->value));
-			break;
-		default:
-			printf("Operation not supported.\n");
-			break;
-
-	}
-	return result;
-	*/
 }
 
 
@@ -615,12 +567,11 @@ dyna_var* callDynaVariable(dyna_var*head,char *x)
 dyna_var* findDynaVariable(dyna_var *head,char *x)
 {
 	dyna_var *temp=head;
-	while(temp && temp->var!=x)
+	while(temp && strcmp(temp->var,x)!=0)
 		temp=temp->next;
-	if (temp->var==x)
-		return temp;
-	else 
-		printf("Variable: %s not found\n",x);
+	return temp;
+	printf("Variable: %s not found\n",x);
+	return NULL;
 }
 
 void free_dyna_variables(dyna_var *head)
