@@ -199,7 +199,7 @@ int Evaluate_Suffix_Expression(char **s)
 	if((stack=(int*)malloc(50*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
-		return 0;
+		exit(-1);
 	}
 	Initialize_Stack(stack);
 
@@ -231,7 +231,7 @@ int Evaluate_Suffix_Expression(char **s)
 					if (t1==0)
 					{
 						printf("Division by zero!!!\n");
-						return 0;
+						exit(-1);
 					}
 					else
 						Push(stack,t2/t1);
@@ -243,7 +243,7 @@ int Evaluate_Suffix_Expression(char **s)
 					if (t1==0)
 					{
 						printf("Undefined operation!\n");
-						return 0;
+						exit(-1);
 					}
 					else
 						Push(stack,t2%t1);
@@ -458,7 +458,7 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 	if (!((65<=*x&&*x<=90)||(97<=*x&&*x<=122)))
 	{
 		printf("Enter only characters for defining variables!\nVariable: %s not defined\n",x);
-		return NULL;
+		exit(-1);
 	}
 	
 	int l=strlen(x),m=strlen(value);
@@ -483,12 +483,12 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 int operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
-	int t1,t2,t3;
+	register int t1,t2,t3;
 	int *stack;
 	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
-		return 0;
+		exit(-1);
 	}
 	Initialize_Stack(stack);
 	
@@ -497,12 +497,13 @@ int operations(dyna_var *head,char **s)
 		register char *x=s[i];
 		if (isalpha(*x))
 		{
-			temp=findDynaVariable (head,x);
-			t3=atoi(temp->value);
-			Push(stack,t3);
+			if ((temp=findDynaVariable(head,x))!=NULL)
+			{
+				t3=atoi(temp->value);
+				Push(stack,t3);
+			}
 		}
-
-		else if (isalnum(*x))
+		else
 		{
 			t1=Pop(stack);
 			t2=Pop(stack);
@@ -521,7 +522,7 @@ int operations(dyna_var *head,char **s)
 					if (t1==0)
 					{
 						printf("Division by zero!!!\n");
-						return 0;
+						exit(-1);
 					}
 					else
 						Push(stack,t2/t1);
@@ -533,19 +534,19 @@ int operations(dyna_var *head,char **s)
 					if (t1==0)
 					{
 						printf("Undefined operation!\n");
-						return 0;
+						exit(-1);
 					}
 					else
 						Push(stack,t2%t1);
 					break;
 				default:
 					printf("Variable: '%s' not supported .\nError 102\n",x);
-					return 0;
+					exit(-1);
 					break;
 			}
 		}
 	}
-	int result=stack[0];
+	register int result=stack[0];
 	free(stack);
 	return result;
 }
@@ -569,9 +570,13 @@ dyna_var* findDynaVariable(dyna_var *head,char *x)
 	dyna_var *temp=head;
 	while(temp && strcmp(temp->var,x)!=0)
 		temp=temp->next;
-	return temp;
-	printf("Variable: %s not found\n",x);
-	return NULL;
+	if (temp==NULL)
+	{
+		printf("Variable: %s not found\n",x);
+		exit(-1);
+	}
+	else
+		return temp;
 }
 
 void free_dyna_variables(dyna_var *head)

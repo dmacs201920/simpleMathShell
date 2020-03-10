@@ -7,7 +7,7 @@ dyna_var *head=NULL;
 void main()
 {	
 	FILE *fp;
-	char *input_string,**w,buf[1024],**t=NULL,*cwd;
+	char *input_string,**w,buf[1024],**t,*cwd;
 	int j,status;
 
 
@@ -16,6 +16,8 @@ void main()
 
 	while(1)
 	{	
+		//for(int i=0;i<10;i++)
+		//	t[i]=NULL;
 		if (wait(&status))
 		{
 			cwd=getcwd(buf,sizeof(buf));
@@ -53,44 +55,62 @@ here:
 					if (j==0)
 					{
 						execlp(t[0],t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7],t[8],t[9],t[10],NULL);
-						perror("execlp");
+						//perror("execlp");
 					}
 					break;
 				case 2:
 					chdir(t[1]);
 					break;
 				case 3:
-					head=dynamicallydeclare(head,t[0],t[2]);
+					if ((j=fork())==0)
+					{
+						head=dynamicallydeclare(head,t[0],t[2]);
+						//perror("Dynamic Declaration");
+						exit(1);
+					}
 					break;
 				case 4:
-					display_dynamically_declared(head);
+					if (head==NULL)
+						printf("No variables declared\n");
+					else
+						display_dynamically_declared(head);
 					break;
 				case 5:
 					j=fork();
 					if (j==0)
 					{	
 						execlp("grep","grep",w,NULL);
-						perror("execlp");
+						//perror("execlp");
 					}
 					break;
 				case 6:
-					w=Infix_to_Suffix(t);
-					int exp=Evaluate_Suffix_Expression(w);
-					printf("~/cherry_shell/:)/>>> %d\n",exp);
+					if ((j=fork())==0)
+					{
+						w=Infix_to_Suffix(t);
+						int exp=Evaluate_Suffix_Expression(w);
+						printf("~/cherry_shell/:)/>>> %d\n",exp);
+						//perror("Suffix Evaluation");
+						exit(1);
+					}
 					break;
 				case 7:
 					printf("~/cherry_shell/:)/>>>  %s\n",cwd);
 					break;
 				case 8:
-					w=Infix_to_Suffix(t);
-					int result=operations(head,w);
-					printf("~/cherry_shell/:)/>>> %d\n",result);
+					if ((j=fork())==0)
+					{
+						w=Infix_to_Suffix(t);
+						int result=operations(head,w);
+						printf("~/cherry_shell/:)/>>> %d\n",result);
+						//perror("Variable Suffix Evaluation");
+						exit(1);
+					}
 					break;
 
 				case 0:
 					free_dyna_variables(head);
-					freeTokenizer(t);
-					exit(-1);
+					//freeTokenizer(t);
+					exit(1);
 					break;
 				default:
 					printf("\nFunction not supported!!!\n");
