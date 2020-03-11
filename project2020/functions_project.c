@@ -300,14 +300,31 @@ char** tokenizer_for_all(char *a)
 	s[k++]='#';
 	s[k++]='\0';
 	
-	char **tokened=(char**)calloc(2*count,sizeof(char*));
+	char **tokened=(char**)calloc(2*count+2,sizeof(char*));
 	k=0;
 	tokened[0]=s;
-	for(int i=0;i<j-1;i++)
+	for(int i=0;k<(2*count+2);i++)
 		if (s[i]=='\0')
 			tokened[++k]=(s+i+1);
 
+	
+
+	for(int i=0;i<(2*count+2);i++)
+	{
+	    if(tokened[i][0]=='\0')
+	    {
+		tokened[i+1][1]=tokened[i+1][0];
+		tokened[i+1][0]='\0';
+	    
+	    tokened[i+2]=&(tokened[i+1][1]);
+	    for(int j=0;i+j<2*count;j++)
+		tokened[i+j]=tokened[i+j+2];
+//	    free(tokened[2*count]);
+//	    free(tokened[2*count+1]);
+	    }
+	}
 	return tokened;
+	free(tokened);
 }
 
 
