@@ -112,6 +112,82 @@ char* check_for_pipes(char **s)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int precedence(char *option)
+{
+	switch(*option)
+	{
+		case '=':
+			return 1;
+			break;
+		case '<':
+			return 1;
+			break;
+		case '>':
+			return 1;
+			break;
+		case '+' :
+			return 2;
+			break;
+		case '-':
+			return 2;
+			break;
+		case '*':
+			return 3;
+			break;
+		case '%':
+			return 3;
+			break;
+		case '/':
+			return 3;
+			break;
+		case '^':
+			return 4;
+			break;
+		case '#':
+			return 0;
+			break;
+		default:
+			return 5;
+			break;
+	}
+}
+
+int rank(char *value)
+{
+	switch(*value)
+	{
+		case '=':
+			return -1;
+			break;
+		case '<':
+			return -1;
+			break;
+		case'>':
+			return -1;
+			break;
+		case '+':
+			return -1;
+			break;
+		case '-':
+			return -1;
+			break;
+		case '*':
+			return -1;
+			break;
+		case '%':
+			return -1;
+			break;
+		case '/':
+			return -1;
+			break;
+		case '^':
+			return -1;
+			break;
+		default:
+			return 1;
+			break;
+	}
+}
 char** Infix_to_Suffix(char** infix)
 {
 	int Rank=0,i=0,k=0;
@@ -176,10 +252,12 @@ char** Infix_to_Suffix(char** infix)
 			return NULL;
 		}
 	}
+	
+	free(s);//  Freeing the stack!!!
+	
 	if(Rank==1)
 	{
 		polish[k]=zero;
-		free(s);
 		return(polish);
 	}
 	else
@@ -192,6 +270,7 @@ int Evaluate_Suffix_Expression(char **s)
 {
 	if (s==NULL)
 		return 0;
+	bool truevar=true, falsevar=false;
 	int i=0;
 	char *temp;
 	int t1,t2,t3;
@@ -248,6 +327,24 @@ int Evaluate_Suffix_Expression(char **s)
 					else
 						Push(stack,t2%t1);
 					break;
+				case '=':
+					if (t1==t2)
+						Push(stack,truevar);
+					else 
+						Push(stack,falsevar);
+					break;
+				case '<':
+					if (t1>t2)
+						Push(stack,truevar);
+					else 
+						Push(stack,falsevar);
+					break;
+				case'>':
+					if (t1<t2)
+						Push(stack,truevar);
+					else
+						Push(stack,falsevar);
+					break;
 				default:
 					printf("Operation not supported.\n");
 					break;
@@ -268,8 +365,10 @@ int Evaluate_Suffix_Expression(char **s)
 
 int check_function_call(char **s)
 {
-	char t[]={'+','-','*','/','%','(',')'};
-
+	char t[]={'+','-','*','/','%','(',')','>','<'};
+	int i=check_for_inbuilt_commands(s[0]);
+	if (i)
+		return 1;
 	if (strcmp(s[0],"dir")==0)
 		return 2;
 	if (strcmp(s[0],"all")==0)
@@ -284,7 +383,7 @@ int check_function_call(char **s)
 		return 6;
 	if ((95<=(*s[0])&&(*s[0]<=122))||(65<=(*s[0])&&(*s[0])<=90))
 	{
-		for(int i=0; i<7;i++)
+		for(int i=0; i<9;i++)
 			if (*s[1]==t[i])
 				if ((95<=(*s[0])&&(*s[0]<=122))||(65<=(*s[0])&&(*s[0])<=90))
 					return 8;
@@ -297,64 +396,7 @@ int check_function_call(char **s)
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int precedence(char *option)
-{
-	switch(*option)
-	{
-		case '+' :
-			return 1;
-			break;
-		case '-':
-			return 1;
-			break;
-		case '*':
-			return 2;
-			break;
-		case '%':
-			return 2;
-			break;
-		case '/':
-			return 2;
-			break;
-		case '^':
-			return 3;
-			break;
-		case '#':
-			return 0;
-			break;
-		default:
-			return 4;
-			break;
-	}
-}
 
-int rank(char *value)
-{
-	switch(*value)
-	{
-		case '+':
-			return -1;
-			break;
-		case '-':
-			return -1;
-			break;
-		case '*':
-			return -1;
-			break;
-		case '%':
-			return -1;
-			break;
-		case '/':
-			return -1;
-			break;
-		case '^':
-			return -1;
-			break;
-		default:
-			return 1;
-			break;
-	}
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,8 +428,8 @@ char** tokenizer(char *s)
 
 int check_for_inbuilt_commands(char *a)//function command "vi -O -y main.c functions.c"
 {
-	char s[][15]={"ls","vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod"};
-	for (int i=0;i<15;i++)
+	char s[][16]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","quit","exit"};
+	for (int i=0;i<16;i++)
 		if (strncmp(s[i],a,strlen(s[i]))==0)
 			return 1;
 	return 0;
@@ -406,7 +448,6 @@ char** tokenizer_for_all(char *a)
 			count++;
 
 	char *s=malloc(l+(2*count+1)+2);
-	int j=l+(2*count+1)+2;
 
 	for (int i=0;i<l;i++)
 	{
@@ -421,17 +462,18 @@ char** tokenizer_for_all(char *a)
 			s[k++]=a[i];
 		}
 	}
-	
+
 	s[k++]='\0';
 	s[k++]='#';
 	s[k++]='\0';
-	
+
 	char **t=(char**)calloc(2*count+2,sizeof(char*));
-	k=0;
+	k=1;
 	t[0]=s;
-	for(int i=0;i<j-1;i++)
+	for(int i=0;k<(2*count+2);i++)
 		if (s[i]=='\0')
-			t[++k]=(s+i+1);
+			t[k++]=(s+i+1);
+
 
 	return t;
 }
@@ -485,6 +527,7 @@ int operations(dyna_var *head,char **s)
 	dyna_var *temp;
 	register int t1,t2,t3;
 	int *stack;
+	bool truevar=true, falsevar=false;
 	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
@@ -538,6 +581,24 @@ int operations(dyna_var *head,char **s)
 					}
 					else
 						Push(stack,t2%t1);
+					break;
+				case '=':
+					if (t1==t2)
+						Push(stack,truevar);
+					else 
+						Push(stack,falsevar);
+					break;
+				case '<':
+					if (t1>t2)
+						Push(stack,truevar);
+					else 
+						Push(stack,falsevar);
+					break;
+				case'>':
+					if (t1<t2)
+						Push(stack,truevar);
+					else
+						Push(stack,falsevar);
 					break;
 				default:
 					printf("Variable: '%s' not supported .\nError 102\n",x);
@@ -595,7 +656,7 @@ void display_dynamically_declared(dyna_var *head)
 {
 
 	if (head==NULL)
-		return;
+		exit(-1);
 	dyna_var *temp=head;
 
 	while(temp!=NULL)

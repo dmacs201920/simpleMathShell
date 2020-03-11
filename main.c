@@ -62,12 +62,7 @@ here:
 					chdir(t[1]);
 					break;
 				case 3:
-					if ((j=fork())==0)
-					{
-						head=dynamicallydeclare(head,t[0],t[2]);
-						//perror("Dynamic Declaration");
-						exit(1);
-					}
+					head=dynamicallydeclare(head,t[0],t[2]);
 					break;
 				case 4:
 					if (head==NULL)
@@ -89,7 +84,7 @@ here:
 						w=Infix_to_Suffix(t);
 						int exp=Evaluate_Suffix_Expression(w);
 						printf("~/cherry_shell/:)/>>> %d\n",exp);
-						//perror("Suffix Evaluation");
+						perror("Suffix Evaluation");
 						exit(1);
 					}
 					break;
@@ -102,7 +97,7 @@ here:
 						w=Infix_to_Suffix(t);
 						int result=operations(head,w);
 						printf("~/cherry_shell/:)/>>> %d\n",result);
-						//perror("Variable Suffix Evaluation");
+						perror("Variable Suffix Evaluation");
 						exit(1);
 					}
 					break;

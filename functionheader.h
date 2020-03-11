@@ -8,8 +8,10 @@
 #include<math.h>
 #include<sys/types.h>
 #include<sys/wait.h>
+#include<stdbool.h>
 
 
+int check_for_inbuilt_commands(char *);//function command "vi -O -y main.c functions.c"
 int check_function_call(char **);
 
 void Initialize_Stack(int *);
