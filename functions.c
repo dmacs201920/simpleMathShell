@@ -223,7 +223,7 @@ char** Infix_to_Suffix(char** infix)
 		if(s==NULL)
 		{
 			printf("Invalid expression\n");
-			return NULL;
+			exit(-1);
 		}
 		while(precedence(current)<(precedence(Topvalue_c(s))))
 		{
@@ -233,7 +233,7 @@ char** Infix_to_Suffix(char** infix)
 			if(Rank<1)
 			{
 				printf("Invalid expression\n");
-				return NULL;
+				exit(-1);
 			}
 		}
 		Push_c(s,current);
@@ -249,7 +249,7 @@ char** Infix_to_Suffix(char** infix)
 		if(Rank<1)
 		{
 			printf("1.Invalid expression\n");
-			return NULL;
+			exit(-1);
 		}
 	}
 	
@@ -263,7 +263,7 @@ char** Infix_to_Suffix(char** infix)
 	else
 	{
 		printf("2.invalid expression\n");
-		return NULL;
+		exit(-1);
 	}
 }
 int Evaluate_Suffix_Expression(char **s)
@@ -271,11 +271,11 @@ int Evaluate_Suffix_Expression(char **s)
 	if (s==NULL)
 		return 0;
 	bool truevar=true, falsevar=false;
-	int i=0;
+	register int i=0;
 	char *temp;
-	int t1,t2,t3;
+	register long int t1,t2,t3;
 	int *stack;
-	if((stack=(int*)malloc(50*sizeof(int)))==NULL)
+	if((stack=(int*)malloc(50*sizeof(long int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
@@ -347,13 +347,14 @@ int Evaluate_Suffix_Expression(char **s)
 					break;
 				default:
 					printf("Operation not supported.\n");
+					exit(-1);
 					break;
 			}
 		}
 		i++;
 
 	}
-	int result=stack[0];
+	register long int result=stack[0];
 	free(stack);
 	return result;
 }

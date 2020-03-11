@@ -8,7 +8,7 @@ dllfunc.o: dllfunc.c functionheader.h
 	gcc -c -g dllfunc.c
 
 functions.o: functions.c functionheader.h
-	gcc -c -g functions.c -lm 
+	gcc -c -g functions.c  
 
 clean: 
 	rm -f *.o *~ chari
