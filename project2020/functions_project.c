@@ -278,9 +278,9 @@ char** tokenizer_for_all(char *a)
 	for (int i=0;i<l;i++)
 		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 			count++;
-	count++;   // this will take into consideration the '#' value
-	char *s=malloc(l+(2*count+1));
-	int j=l+(2*count+1);
+	
+	char *s=malloc(l+(2*count+1)+2);
+	
 
 	for (int i=0;i<l;i++)
 	{
@@ -301,28 +301,39 @@ char** tokenizer_for_all(char *a)
 	s[k++]='\0';
 	
 	char **tokened=(char**)calloc(2*count+2,sizeof(char*));
-	k=0;
+	k=1;
 	tokened[0]=s;
 	for(int i=0;k<(2*count+2);i++)
 		if (s[i]=='\0')
-			tokened[++k]=(s+i+1);
+			tokened[k++]=(s+i+1);
 
-	
+	int numb=0;
 
 	for(int i=0;i<(2*count+2);i++)
 	{
 	    if(tokened[i][0]=='\0')
 	    {
+		numb++;
 		tokened[i+1][1]=tokened[i+1][0];
 		tokened[i+1][0]='\0';
 	    
 	    tokened[i+2]=&(tokened[i+1][1]);
 	    for(int j=0;i+j<2*count;j++)
 		tokened[i+j]=tokened[i+j+2];
-//	    free(tokened[2*count]);
+
+//    free(tokened[2*count]);
 //	    free(tokened[2*count+1]);
 	    }
 	}
+
+//	tokened=realloc(tokened,(2*count)-(2*numb));
+
+
+
+
+
+
+
 	return tokened;
 	free(tokened);
 }
