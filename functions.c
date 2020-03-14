@@ -32,11 +32,11 @@ char* Topvalue_c(char**s)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Initialize_Stack(int *a)
+void Initialize_Stack(double *a)
 {
 	top=-1;
 }
-void Push (int *s, int x)
+void Push (double *s, double x)
 {
 	top++;
 	if (Isfull()==0)
@@ -45,7 +45,7 @@ void Push (int *s, int x)
 		Stackoverflow();
 }
 
-int Pop (int *s)
+double Pop (double *s)
 {
 	if (Isempty()==0)
 		return s[top--];
@@ -54,7 +54,7 @@ int Pop (int *s)
 }
 
 
-int Topvalue(int*s)
+double Topvalue(double*s)
 {
 	if (Isempty()==1)
 		return 0;
@@ -253,11 +253,11 @@ char** Infix_to_Suffix(char** infix)
 		}
 	}
 	
-	free(s);//  Freeing the stack!!!
+	free(s);	//Freeing the stack!!!
 	
 	if(Rank==1)
 	{
-		polish[k]=zero;
+		polish[k]=hash;
 		return(polish);
 	}
 	else
@@ -266,29 +266,29 @@ char** Infix_to_Suffix(char** infix)
 		exit(-1);
 	}
 }
-int Evaluate_Suffix_Expression(char **s)
+double Evaluate_Suffix_Expression(char **s)
 {
 	if (s==NULL)
 		return 0;
 	bool truevar=true, falsevar=false;
 	register int i=0;
 	char *temp;
-	register long int t1,t2,t3;
-	int *stack;
-	if((stack=(int*)malloc(50*sizeof(long int)))==NULL)
+	register double t1,t2,t3;
+	double *stack;
+	if((stack=(double*)malloc(50*sizeof(double)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
 	}
 	Initialize_Stack(stack);
 
-	while(*s[i])
+	while(*s[i]!='#')
 	{
 		temp=s[i];
 
 		if (isdigit(*temp))
 		{
-			t3=atoi(temp);
+			t3=strtof(temp,NULL);
 			Push(stack,t3);
 		}
 		else
@@ -325,7 +325,7 @@ int Evaluate_Suffix_Expression(char **s)
 						exit(-1);
 					}
 					else
-						Push(stack,t2%t1);
+						Push(stack,(int)t2 %(int)t1);
 					break;
 				case '=':
 					if (t1==t2)
@@ -354,7 +354,7 @@ int Evaluate_Suffix_Expression(char **s)
 		i++;
 
 	}
-	register long int result=stack[0];
+	register double result=stack[0];
 	free(stack);
 	return result;
 }
@@ -445,14 +445,14 @@ char** tokenizer_for_all(char *a)
 		return tokenizer(a);
 
 	for (int i=0;i<l;i++)
-		if ((!isalnum(a[i])&&!a[i]=='.')||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+		if ((!isalnum(a[i])&&(a[i]!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 			count++;
 
 	char *s=malloc(l+(2*count+1)+2);
 
 	for (int i=0;i<l;i++)
 	{
-		if ((!isalnum(a[i])&&!a[i]=='.')||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+		if ((!isalnum(a[i])&&(a[i]!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 		{
 			s[k++]='\0';
 			s[k++]=a[i];
@@ -523,27 +523,27 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 
 }
 
-int operations(dyna_var *head,char **s)
+double operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
-	register int t1,t2,t3;
-	int *stack;
+	register double t1,t2,t3;
+	double *stack;
 	bool truevar=true, falsevar=false;
-	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
+	if((stack=(double*)malloc(15*sizeof(double)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
 	}
 	Initialize_Stack(stack);
 	
-	for (int i=0;*s[i]!='\0';i++)
+	for (int i=0;*s[i]!='#';i++)
 	{
 		register char *x=s[i];
 		if (isalpha(*x))
 		{
 			if ((temp=findDynaVariable(head,x))!=NULL)
 			{
-				t3=atoi(temp->value);
+				t3=strtof(temp->value,NULL);
 				Push(stack,t3);
 			}
 		}
@@ -581,7 +581,7 @@ int operations(dyna_var *head,char **s)
 						exit(-1);
 					}
 					else
-						Push(stack,t2%t1);
+						Push(stack,(int)t2%(int)t1);
 					break;
 				case '=':
 					if (t1==t2)
@@ -608,7 +608,7 @@ int operations(dyna_var *head,char **s)
 			}
 		}
 	}
-	register int result=stack[0];
+	register double result=stack[0];
 	free(stack);
 	return result;
 }
