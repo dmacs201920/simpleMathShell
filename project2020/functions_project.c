@@ -333,7 +333,7 @@ char** tokenizer_for_all(char *a)
 	    strcpy(t[i],tokened[i]);
 	}
 
-	free (tokened);
+	//free (tokened);
 		
 
 	return t;

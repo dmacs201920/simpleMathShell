@@ -16,7 +16,7 @@ void main()
     output=tokenizer_for_all(input);
 
     printf("Tokeneded:");
-    for(int j=0;j<4;j++)
+    for(int j=0;*output[j];j++)
 	printf("%s ",(output[j]));
     printf("\n");
 
