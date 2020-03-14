@@ -445,14 +445,14 @@ char** tokenizer_for_all(char *a)
 		return tokenizer(a);
 
 	for (int i=0;i<l;i++)
-		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+		if ((!isalnum(a[i])&&!a[i]=='.')||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 			count++;
 
 	char *s=malloc(l+(2*count+1)+2);
 
 	for (int i=0;i<l;i++)
 	{
-		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+		if ((!isalnum(a[i])&&!a[i]=='.')||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 		{
 			s[k++]='\0';
 			s[k++]=a[i];
