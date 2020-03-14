@@ -14,10 +14,10 @@
 int check_for_inbuilt_commands(char *);//function command "vi -O -y main.c functions.c"
 int check_function_call(char **);
 
-void Initialize_Stack(int *);
-void Push (int *, int );
-int Pop (int* );
-int Topvalue(int*);
+void Initialize_Stack(double *);
+void Push (double *, double );
+double Pop (double* );
+double Topvalue(double*);
 int Isfull();
 int Isempty();
 void Stackoverflow();
@@ -26,7 +26,7 @@ void Initialize_Stack_c(char **);
 void Push_c(char **, char *);
 char* Pop_c(char **);
 char* Topvalue_c(char **);
-int Evaluate_Suffix_Expression(char **);
+double Evaluate_Suffix_Expression(char **);
 int power(int t1,int t2);
 char** Infix_to_Suffix(char**);
 int precedence(char *);
@@ -53,7 +53,7 @@ void free_dyna_variables(dyna_var *);
 void display_dynamically_declared(dyna_var *);
 dyna_var* findDynaVariable(dyna_var *,char *);
 dyna_var* callDynaVariable(dyna_var *,char *);
-int operations(dyna_var *,char **);
+double operations(dyna_var *,char **);
 
 
 typedef struct dll

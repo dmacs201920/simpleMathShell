@@ -272,15 +272,15 @@ char** tokenizer_for_all(char *a)
 {
 	int l=strlen(a),k=0,count=0;
 	
-//	if (check_for_inbuilt_commands(a))
-//		return tokenizer(a);
+	//	if (check_for_inbuilt_commands(a))
+	//		return tokenizer(a);
 
 	for (int i=0;i<l;i++)
 		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 			count++;
-	
+
 	char *s=malloc(l+(2*count+1)+2);
-	
+
 
 	for (int i=0;i<l;i++)
 	{
@@ -295,11 +295,11 @@ char** tokenizer_for_all(char *a)
 			s[k++]=a[i];
 		}
 	}
-	
+
 	s[k++]='\0';
 	s[k++]='#';
 	s[k++]='\0';
-	
+
 	char **tokened=(char**)calloc(2*count+2,sizeof(char*));
 	k=1;
 	tokened[0]=s;
@@ -311,31 +311,28 @@ char** tokenizer_for_all(char *a)
 
 	for(int i=0;i<(2*count+2);i++)
 	{
-	    if(tokened[i][0]=='\0')
-	    {
-		numb++;
-		tokened[i+1][1]=tokened[i+1][0];
-		tokened[i+1][0]='\0';
-	    
-	    tokened[i+2]=&(tokened[i+1][1]);
-	    for(int j=0;i+j<2*count;j++)
-		tokened[i+j]=tokened[i+j+2];
+		if(*(tokened[i])=='\0')
+		{
+			numb++;
+			char c=tokened[i+1][1];
+			tokened[i+1][1]=tokened[i+1][0];
+			tokened[i+1][0]=c;
 
-//    free(tokened[2*count]);
-//	    free(tokened[2*count+1]);
-	    }
+			tokened[i+2]=&(tokened[i+1][1]);
+			for(int j=0;(i+j)<2*count;j++)
+				tokened[i+j]=tokened[i+j+2];
+
+		}
 	}
 
-//	tokened=realloc(tokened,(2*count)-(2*numb));
+	char **t=malloc((2*count+2)-(2*numb)*sizeof(char *));
+	for (int i=0;i<(2*count+2)-(2*numb);i++)
+		t[i]=tokened[i];
 
+	free (tokened);
+		
 
-
-
-
-
-
-	return tokened;
-	free(tokened);
+	return t;
 }
 
 
