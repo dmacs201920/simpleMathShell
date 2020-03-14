@@ -440,7 +440,7 @@ int check_for_inbuilt_commands(char *a)//function command "vi -O -y main.c funct
 char** tokenizer_for_all(char *a)
 {
 	int l=strlen(a),k=0,count=0;
-	
+
 	if (check_for_inbuilt_commands(a))
 		return tokenizer(a);
 
@@ -475,8 +475,32 @@ char** tokenizer_for_all(char *a)
 		if (s[i]=='\0')
 			t[k++]=(s+i+1);
 
+	int numb=0;
 
-	return t;
+	for(int i=0;i<(2*count+2);i++)
+	{
+		if(*(t[i])=='\0')
+		{
+			numb++;
+			char c=t[i+1][1];
+			t[i+1][1]=t[i+1][0];
+			t[i+1][0]=c;
+
+			t[i+2]=&(t[i+1][1]);
+			for(int j=0;(i+j)<2*count;j++)
+				t[i+j]=t[i+j+2];
+
+		}
+	}
+
+	char **w=calloc(((2*count+2)-(2*numb)),sizeof(char *));
+
+	for (int i=0;i<(2*count+2)-(2*numb);i++)
+	{
+		w[i]=(char*)calloc(strlen(t[i]),sizeof(char));
+		strcpy(w[i],t[i]);
+	}
+	return w;
 }
 
 
