@@ -325,9 +325,13 @@ char** tokenizer_for_all(char *a)
 		}
 	}
 
-	char **t=malloc((2*count+2)-(2*numb)*sizeof(char *));
+	char **t=calloc(((2*count+2)-(2*numb)),sizeof(char *));
+
 	for (int i=0;i<(2*count+2)-(2*numb);i++)
-		t[i]=tokened[i];
+	{
+	    t[i]=(char*)calloc(strlen(tokened[i]),sizeof(char));
+	    strcpy(t[i],tokened[i]);
+	}
 
 	free (tokened);
 		
@@ -459,7 +463,34 @@ char** Infix_to_Suffix(char** infix)
 	if((polish=(char**)calloc(i,(sizeof(char*))))==NULL)
 	{
 	printf("Not enough memory!!!");
-	exit(-1);
+	exit(-1);    while(*current!=*hash)
+    {
+	if(st==NULL)
+	{
+	    printf("Invalid expression\n");
+	    return NULL;
+	}
+	while(precedence(current)<=(precedence(Topvalue_c(st))))
+	{
+	    temp1=Pop_c(st);
+	    polish[k++]=temp1;
+	    Rank=Rank+rank(temp1);
+	    if(Rank<1)
+	    {
+		printf("Invalid expression\n");
+		return NULL;
+	    }
+	}
+	Push_c(st,current);
+	current=((infix[i++]));
+    }
+    while(*(Topvalue_c(st))!=*hash)
+    {
+	temp1=Pop_c(st);
+	polish[k++]=temp1;
+	Rank=Rank+rank(temp1);
+
+
 	}*/
     i=0;
 
