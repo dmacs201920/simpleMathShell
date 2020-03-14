@@ -32,11 +32,11 @@ char* Topvalue_c(char**s)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Initialize_Stack(double *a)
+void Initialize_Stack(int *a)
 {
 	top=-1;
 }
-void Push (double *s, double x)
+void Push (int *s, int x)
 {
 	top++;
 	if (Isfull()==0)
@@ -45,7 +45,7 @@ void Push (double *s, double x)
 		Stackoverflow();
 }
 
-double Pop (double *s)
+int Pop (int *s)
 {
 	if (Isempty()==0)
 		return s[top--];
@@ -54,7 +54,7 @@ double Pop (double *s)
 }
 
 
-double Topvalue(double*s)
+int Topvalue(int*s)
 {
 	if (Isempty()==1)
 		return 0;
@@ -266,16 +266,16 @@ char** Infix_to_Suffix(char** infix)
 		exit(-1);
 	}
 }
-double Evaluate_Suffix_Expression(char **s)
+int Evaluate_Suffix_Expression(char **s)
 {
 	if (s==NULL)
 		return 0;
 	bool truevar=true, falsevar=false;
 	register int i=0;
 	char *temp;
-	register double t1,t2,t3;
-	double *stack;
-	if((stack=(double*)malloc(50*sizeof(double)))==NULL)
+	register int t1,t2,t3;
+	int *stack;
+	if((stack=(int*)malloc(50*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
@@ -354,7 +354,7 @@ double Evaluate_Suffix_Expression(char **s)
 		i++;
 
 	}
-	register double result=stack[0];
+	register int result=stack[0];
 	free(stack);
 	return result;
 }
@@ -523,13 +523,13 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 
 }
 
-double operations(dyna_var *head,char **s)
+int operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
-	register double t1,t2,t3;
-	double *stack;
+	register int t1,t2,t3;
+	int *stack;
 	bool truevar=true, falsevar=false;
-	if((stack=(double*)malloc(15*sizeof(double)))==NULL)
+	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
@@ -608,7 +608,7 @@ double operations(dyna_var *head,char **s)
 			}
 		}
 	}
-	register double result=stack[0];
+	register int result=stack[0];
 	free(stack);
 	return result;
 }

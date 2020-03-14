@@ -329,7 +329,7 @@ char** tokenizer_for_all(char *a)
 	for (int i=0;i<(2*count+2)-(2*numb);i++)
 		t[i]=tokened[i];
 
-	free (tokened);
+	//free (tokened);
 		
 
 	return t;

@@ -79,14 +79,14 @@ here:
 					}
 					break;
 				case 6:
-					//if ((j=fork())==0)
-					//{
+					if ((j=fork())==0)
+					{
 						w=Infix_to_Suffix(t);
 						double exp=Evaluate_Suffix_Expression(w);
 						printf("~/cherry_shell/:)/>>> %.4lf\n",exp);
 						perror("Suffix Evaluation");
 						exit(1);
-					//}
+					}
 					break;
 				case 7:
 					printf("~/cherry_shell/:)/>>>  %s\n",cwd);
