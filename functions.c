@@ -32,11 +32,11 @@ char* Topvalue_c(char**s)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Initialize_Stack(int *a)
+void Initialize_Stack(double *a)
 {
 	top=-1;
 }
-void Push (int *s, int x)
+void Push (double *s, double x)
 {
 	top++;
 	if (Isfull()==0)
@@ -45,7 +45,7 @@ void Push (int *s, int x)
 		Stackoverflow();
 }
 
-int Pop (int *s)
+double Pop (double *s)
 {
 	if (Isempty()==0)
 		return s[top--];
@@ -54,7 +54,7 @@ int Pop (int *s)
 }
 
 
-int Topvalue(int*s)
+double Topvalue(double*s)
 {
 	if (Isempty()==1)
 		return 0;
@@ -95,9 +95,9 @@ void Stackunderflow()
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int power(int t1,int t2)
+double power(double t1,double t2)
 {
-	int pow=1;
+	double pow=1;
 	for(int i=0;i<t2;i++)
 		pow*=t1;
 	return pow;
@@ -190,13 +190,13 @@ int rank(char *value)
 }
 char** Infix_to_Suffix(char** infix)
 {
-	int Rank=0,i=0,k=0;
+	int Rank=0,i=0,k=0,j=0;
 	char **s,**polish,*temp,*current,c;
-	char hash[]={'#'};
+	char hash[]="#\0";
 	char zero[]={'\0'};
 
 
-	while(*(infix[i++])!='#');
+	while(*(infix[j++])!='#');
 
 	//s=(char**)malloc(25*(sizeof(char*)));
 	if((s=(char**)calloc(25,(sizeof(char*))))==NULL)
@@ -204,7 +204,7 @@ char** Infix_to_Suffix(char** infix)
 		printf("Not enough memory!!!");
 		return NULL;
 	}
-	if((polish=(char**)malloc(i*(sizeof(char*))))==NULL)
+	if((polish=(char**)malloc(j*(sizeof(char*))))==NULL)
 	{
 		printf("Not enough memory!!!");
 		exit(-1);
@@ -228,7 +228,8 @@ char** Infix_to_Suffix(char** infix)
 		while(precedence(current)<(precedence(Topvalue_c(s))))
 		{
 			temp=Pop_c(s);
-			polish[k++]=temp;
+			polish[k]=malloc(strlen(temp));
+			strcpy(polish[k++],temp);
 			Rank=Rank+rank(temp);
 			if(Rank<1)
 			{
@@ -243,7 +244,8 @@ char** Infix_to_Suffix(char** infix)
 	while(*(Topvalue_c(s))!=*hash)
 	{
 		temp=Pop_c(s);
-		polish[k++]=temp;
+		polish[k]=malloc(strlen(temp));
+		strcpy(polish[k++],temp);
 		Rank=Rank+rank(temp);
 
 		if(Rank<1)
@@ -253,12 +255,16 @@ char** Infix_to_Suffix(char** infix)
 		}
 	}
 	
-	free(s);	//Freeing the stack!!!
+	free(s);
+	for (i=0;i<j;i++)
+		free(infix[i]);//Freeing the stack!!!
 	
 	if(Rank==1)
 	{
-		polish[k]=hash;
+		polish[k]=malloc(strlen(hash));
+		strcpy(polish[k],hash);
 		return(polish);
+		
 	}
 	else
 	{
@@ -266,36 +272,35 @@ char** Infix_to_Suffix(char** infix)
 		exit(-1);
 	}
 }
-int Evaluate_Suffix_Expression(char **s)
+double Evaluate_Suffix_Expression(char **s)
 {
 	if (s==NULL)
 		return 0;
 	bool truevar=true, falsevar=false;
 	register int i=0;
-	char *temp;
-	register int t1,t2,t3;
-	int *stack;
-	if((stack=(int*)malloc(50*sizeof(int)))==NULL)
+	//char *temp;
+	register double t1,t2,t3;
+	double *stack;
+	if((stack=(double*)malloc(50*sizeof(double)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
 	}
 	Initialize_Stack(stack);
 
-	while(*s[i]!='#')
+	for (int i=0;*s[i]!='#';i++)
 	{
-		temp=s[i];
 
-		if (isdigit(*temp))
+		if (isdigit(*s[i]))
 		{
-			t3=strtof(temp,NULL);
-			Push(stack,t3);
+			t3=atof(s[i]);
+			Push(stack,(double)t3);
 		}
-		else
+		else if (*s[i]=='+'||*s[i]=='-'||*s[i]=='*'||*s[i]=='/'||*s[i]=='<'||*s[i]=='>'||*s[i]=='%'||*s[i]=='=')
 		{
 			t1=Pop(stack);
 			t2=Pop(stack);
-			switch(*temp)
+			switch(*s[i])
 			{
 				case '+':
 					Push(stack,t1+t2);
@@ -351,10 +356,9 @@ int Evaluate_Suffix_Expression(char **s)
 					break;
 			}
 		}
-		i++;
 
 	}
-	register int result=stack[0];
+	register double result=stack[0];
 	free(stack);
 	return result;
 }
@@ -378,7 +382,7 @@ int check_function_call(char **s)
 	if (s[1]&&*s[1]=='=')
 		if (48<=(*s[2])&&(*s[2])<=56)
 			return 3;
-	if (strcmp(s[0],"exit")==0||strcmp(s[0],"quit")==0)
+	if ((strcmp(s[0],"exit")==0)||(strcmp(s[0],"quit")==0))
 		return 0;
 	if (48<=(*s[0])&&(*s[0])<=57)
 		return 6;
@@ -409,21 +413,25 @@ char** tokenizer(char *s)
 	for(j=0;j<l;j++)
 	{
 		if(s[j]==' ')
+		{
+			s[j]='\0';
 			word++;
+		}
 	}
 	word++;
 
 	t=calloc(word,sizeof(char*));
-	t[0]=s;
-
-	for(i=0;i<l;i++)
+	t[0]=calloc(1,strlen(s));
+	strcpy(t[0],s);
+	for(i=1;i<l;i++)
 	{
-		if(s[i]==' ')
+		if(s[i]=='\0')
 		{
-			s[i]='\0';
-			t[k++]=s+i+1;
+			t[k]=calloc(1,strlen(&s[i+1]));
+			strcpy(t[k++],&s[i+1]);
 		}
 	}
+	free(s);
 	return t;
 }
 
@@ -440,7 +448,7 @@ int check_for_inbuilt_commands(char *a)//function command "vi -O -y main.c funct
 char** tokenizer_for_all(char *a)
 {
 	int l=strlen(a),k=0,count=0;
-	
+
 	if (check_for_inbuilt_commands(a))
 		return tokenizer(a);
 
@@ -475,8 +483,35 @@ char** tokenizer_for_all(char *a)
 		if (s[i]=='\0')
 			t[k++]=(s+i+1);
 
+	int numb=0;
 
-	return t;
+	for(int i=0;i<(2*count+2);i++)
+	{
+		if(*(t[i])=='\0')
+		{
+			numb++;
+			char c=t[i+1][1];
+			t[i+1][1]=t[i+1][0];
+			t[i+1][0]=c;
+
+			t[i+2]=&(t[i+1][1]);
+			for(int j=0;(i+j)<2*count;j++)
+				t[i+j]=t[i+j+2];
+
+		}
+	}
+
+	char **w=calloc(((2*count+2)-(2*numb)),sizeof(char *));
+
+	for (int i=0;i<(2*count+2)-(2*numb);i++)
+	{
+		w[i]=(char*)calloc(strlen(t[i]),sizeof(char));
+		strcpy(w[i],t[i]);
+	}
+	free(t);
+	free(s);
+	free(a);
+	return w;
 }
 
 
@@ -526,10 +561,10 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 int operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
-	register int t1,t2,t3;
-	int *stack;
+	register double t1,t2,t3;
+	double *stack;
 	bool truevar=true, falsevar=false;
-	if((stack=(int*)malloc(15*sizeof(int)))==NULL)
+	if((stack=(double*)malloc(15*sizeof(double)))==NULL)
 	{
 		printf("Not enough memory!!!\n");
 		exit(-1);
