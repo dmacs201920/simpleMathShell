@@ -146,7 +146,7 @@ void  trim(char  *a)
 	    ++q;
 	}
     }
-     printf("trimed :%s\n",a);
+    printf("trimed :%s\n",a);
 }
 
 
@@ -266,77 +266,102 @@ temp[++k]=(s+i+1);
 return tokened;
 }
 
-    */
+*/
 
 char** tokenizer_for_all(char *a)
 {
-	int l=strlen(a),k=0,count=0;
-	
-	//	if (check_for_inbuilt_commands(a))
-	//		return tokenizer(a);
+    int l=strlen(a),k=0,count=0,flag=0;
 
-	for (int i=0;i<l;i++)
-		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
-			count++;
-
-	char *s=malloc(l+(2*count+1)+2);
+    //	if (check_for_inbuilt_commands(a))
+    //		return tokenizer(a);
 
 
-	for (int i=0;i<l;i++)
+    for(int w=0;w<l;w++)
+    {
+	if((a[w]=='(') || (a[w]==')'))
+	    flag=1;
+	break;
+    }
+
+
+    for (int i=0;i<l;i++)
+	if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+	    count++;
+
+    char *s=malloc(l+(2*count+1)+2);
+
+
+    for (int i=0;i<l;i++)
+    {
+	if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 	{
-		if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
-		{
-			s[k++]='\0';
-			s[k++]=a[i];
-			s[k++]='\0';
-		}
-		else 
-		{	
-			s[k++]=a[i];
-		}
+	    s[k++]='\0';
+	    s[k++]=a[i];
+	    s[k++]='\0';
 	}
-
-	s[k++]='\0';
-	s[k++]='#';
-	s[k++]='\0';
-
-	char **tokened=(char**)calloc(2*count+2,sizeof(char*));
-	k=1;
-	tokened[0]=s;
-	for(int i=0;k<(2*count+2);i++)
-		if (s[i]=='\0')
-			tokened[k++]=(s+i+1);
-
-	int numb=0;
-
-	for(int i=0;i<(2*count+2);i++)
+	else if((a[i]==')') || (a[i]=='('))
 	{
-		if(*(tokened[i])=='\0')
-		{
-			numb++;
-			char c=tokened[i+1][1];
-			tokened[i+1][1]=tokened[i+1][0];
-			tokened[i+1][0]=c;
-
-			tokened[i+2]=&(tokened[i+1][1]);
-			for(int j=0;(i+j)<2*count;j++)
-				tokened[i+j]=tokened[i+j+2];
-
-		}
+	    s[k++]='\0';
+	    s[k++]=a[i];
 	}
+	else
+	{	
+	    s[k++]=a[i];
+	}
+    }
 
-	char **t=calloc(((2*count+2)-(2*numb)),sizeof(char *));
 
-	for (int i=0;i<(2*count+2)-(2*numb);i++)
+    if(flag==0)
+    {
+
+    s[k++]='\0';
+    s[k++]='#';
+    s[k++]='\0';
+    }
+    if(flag==1)
+    {
+    s[k++]='\0';
+    s[k++]=')';
+    s[k++]='\0';
+    }
+
+    char **tokened=(char**)calloc(2*count+2,sizeof(char*));
+    k=1;
+    tokened[0]=s;
+    for(int i=0;k<(2*count+2);i++)
+	if (s[i]=='\0')
+	    tokened[k++]=(s+i+1);
+
+    int numb=0;
+
+    for(int i=0;i<(2*count+2);i++)
+    {
+	if(*(tokened[i])=='\0')
 	{
-	    t[i]=(char*)calloc(strlen(tokened[i]),sizeof(char));
-	    strcpy(t[i],tokened[i]);
+	    numb++;
+	    char c=tokened[i+1][1];
+	    tokened[i+1][1]=tokened[i+1][0];
+	    tokened[i+1][0]=c;
+
+	    tokened[i+2]=&(tokened[i+1][1]);
+	    for(int j=0;(i+j)<2*count;j++)
+		tokened[i+j]=tokened[i+j+2];
+
 	}
+    }
 
-	//free (tokened);
-		
+    char **t=calloc(((2*count+2)-(2*numb)),sizeof(char *));
 
-	return t;
+    for (int i=0;i<(2*count+2)-(2*numb);i++)
+    {
+	t[i]=(char*)calloc(strlen(tokened[i]),sizeof(char));
+	strcpy(t[i],tokened[i]);
+    }
+
+    //free (tokened);
+
+
+    return t;
 }
 
 
@@ -351,6 +376,8 @@ char** tokenizer_for_all(char *a)
 
 int precedence(char* option)
 {
+    if((option[0]=='-') && (isdigit(option[1])) )
+	return 5;
     switch(*option)
     {
 	case '=' :
@@ -391,7 +418,9 @@ int precedence(char* option)
 
 int rank(char* value)
 {
-    switch(value[0])
+    if((value[0]=='-') && (isdigit(value[1])) )
+	return 1;
+    switch(*value)
     {
 	case '=':
 	    return -1;
@@ -459,39 +488,6 @@ char** Infix_to_Suffix(char** infix)
 	printf("Not enough memory!!!");
 	return NULL;
     }
-    /*	
-	if((polish=(char**)calloc(i,(sizeof(char*))))==NULL)
-	{
-	printf("Not enough memory!!!");
-	exit(-1);    while(*current!=*hash)
-    {
-	if(st==NULL)
-	{
-	    printf("Invalid expression\n");
-	    return NULL;
-	}
-	while(precedence(current)<=(precedence(Topvalue_c(st))))
-	{
-	    temp1=Pop_c(st);
-	    polish[k++]=temp1;
-	    Rank=Rank+rank(temp1);
-	    if(Rank<1)
-	    {
-		printf("Invalid expression\n");
-		return NULL;
-	    }
-	}
-	Push_c(st,current);
-	current=((infix[i++]));
-    }
-    while(*(Topvalue_c(st))!=*hash)
-    {
-	temp1=Pop_c(st);
-	polish[k++]=temp1;
-	Rank=Rank+rank(temp1);
-
-
-	}*/
     i=0;
 
     Initialize_Stack_c(st);
@@ -505,7 +501,7 @@ char** Infix_to_Suffix(char** infix)
     {
 	if(st==NULL)
 	{
-	    printf("Invalid expression\n");
+	    printf("1.Invalid expression\n");
 	    return NULL;
 	}
 	while(precedence(current)<=(precedence(Topvalue_c(st))))
@@ -515,7 +511,7 @@ char** Infix_to_Suffix(char** infix)
 	    Rank=Rank+rank(temp1);
 	    if(Rank<1)
 	    {
-		printf("Invalid expression\n");
+		printf("2.Invalid expression\n");
 		return NULL;
 	    }
 	}
@@ -530,7 +526,7 @@ char** Infix_to_Suffix(char** infix)
 
 	if(Rank<1)
 	{
-	    printf("1.Invalid expression\n");
+	    printf("3.Invalid expression\n");
 	    return NULL;
 	}
     }
@@ -545,12 +541,12 @@ char** Infix_to_Suffix(char** infix)
     }
     else
     {
-	printf("2.invalid expression\n");
+	printf("4.invalid expression\n");
 	return NULL;
     }
-    	free(temp1);
-    	free(current);
-	free(polish);
+    free(temp1);
+    free(current);
+    free(polish);
 }
 
 
@@ -560,174 +556,358 @@ char** Infix_to_Suffix(char** infix)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*int input_precedence(char* option)
-  {
-  switch(option)
-  {
-  case '+' :
-  return 2;
-  break;
-  case '-':
-  return 2;
-  break;
-  case '*':
-  return 4;
-  break;
-  case '/':
-  return 4;
-  break;
-  case '%':
-  return 4;
-  break;
-  case'^':
-  return 7;
-  break;
-  case '(':
-  return 10;
-  break;
-  case ')':
-  return 1;
-  break;
-
-  default:
-  return 8;
-  break;
-  }
-  }
-  int stack_precedence(char* option)
-  {
-  switch(option)
-  {
-  case '+' :
-  return 3;
-  break;
-  case '-':
-  return 3;
-  break;
-  case '*':
-  return 5;
-  break;
-  case '%':
-  return 5;
-  break;
-  case '/':
-  return 5;
-  break;
-  case'^':
-  return 6;
-  break;
-  case '(':
-  return 1;
-  break;
-  case ')':
-  return 0;
-  break;
-  default:
-  return 9;
-  break;
-
-  }
-  }
-
-  int rank_para(char* value)
-  {
-switch(value[0])
+int input_precedence(char* option)
 {
-    case '+' :
-	return -1;
-	break;
-    case '-':
-	return -1;
-	break;
-    case '*':
-	return -1;
-	break;
-    case '/':
-	return -1;
-	break;
-    case '%':
-	return -1;
-	break;
-    case'^':
-	return -1;
-	break;
-    case')':
-	return 0;
-	break;
-    case'(':
-	return 0;
-	break;
-    default:
-	return 1;
-	break;
-
-}
-}
-
-
-char* Paranthised_infix_to_Suffix(char* infix)
-{
-
-    int l=strlen(infix),Rank=0,i=0,j=0,garbage;
-    char *s,*polish,*temp,current,c;
-
-
-    infix[l]=')';
-    infix[l+1]='\0';
-
-
-    s=(char*)malloc(l);
-    polish=(char*)malloc(l);
-    temp=(char*)malloc(l);
-
-    Initialize_Stack_c(s);
-
-    Push_c(s,'(');
-
-    current=((infix[i]));
-    i++;
-
-    while(current!='\0')
+    if((option[0]=='-') && (isdigit(option[1])) )
+	return 9;
+    switch(*option)
     {
-	if(s==NULL)
+	case '=' :
+	    return 2;
+	    break;
+	case '<' :
+	    return 2;
+	    break;
+	case '>' :
+	    return 2;
+	    break;
+	case '+' :
+	    return 3;
+	    break;
+	case '-':
+	    return 3;
+	    break;
+	case '*':
+	    return 5;
+	    break;
+	case '/':
+	    return 5;
+	    break;
+	case '%':
+	    return 5;
+	    break;
+	case'^':
+	    return 8;
+	    break;
+	case '(':
+	    return 11;
+	    break;
+	case ')':
+	    return 1;
+	    break;
+
+	default:
+	    return 9;
+	    break;
+    }
+}
+
+/*
+
+int precedence(char* option)
+{
+    if((option[0]=='-') && (isdigit(option[1])) )
+	return 5;
+    switch(*option)
+    {
+	case '=' :
+	    return 1;
+	    break;
+	case '<' :
+	    return 1;
+	    break;
+	case '>' :
+	    return 1;
+	    break;
+	case '+' :
+	    return 2;
+	    break;
+	case '-':
+	    return 2;
+	    break;
+	case '*':
+	    return 3;
+	    break;
+	case '%':
+	    return 3;
+	    break;
+	case '/':
+	    return 3;
+	    break;
+	case '^':
+	    return 4;
+	    break;
+	case '#':
+	    return 0;
+	    break;
+	default:
+	    return 5;
+	    break;
+    }
+}
+
+int rank(char* value)
+{
+    if((value[0]=='-') && (isdigit(value[1])) )
+	return 1;
+    switch(*value)
+    {
+	case '=':
+	    return -1;
+	    break;
+	case '<':
+	    return -1;
+	    break;
+	case '>':
+	    return -1;
+	    break;
+	case '+':
+	    return -1;
+	    break;
+	case '-':
+	    return -1;
+	    break;
+	case '*':
+	    return -1;
+	    break;
+	case '^':
+	    return -1;
+	    break;
+	case '%':
+	    return -1;
+	    break;
+	case '/':
+	    return -1;
+	    break;
+	default:
+	    return 1;
+	    break;
+    }
+
+
+   */
+int stack_precedence(char* option)
+{
+    if((option[0]=='-') && (isdigit(option[1])) )
+	return 10;
+    switch(*option)
+    {
+	case '+' :
+	    return 4;
+	    break;
+	case '-':
+	    return 4;
+	    break;
+	case '*':
+	    return 6;
+	    break;
+	case '%':
+	    return 6;
+	    break;
+	case '/':
+	    return 6;
+	    break;
+	case'^':
+	    return 7;
+	    break;
+	case '(':
+	    return 2;
+	    break;
+	case ')':
+	    return 0;
+	    break;
+	default:
+	    return 10;
+	    break;
+
+    }
+}
+
+int rank_para(char* value)
+{
+    switch(value[0])
+    {
+	case '+' :
+	    return -1;
+	    break;
+	case '-':
+	    return -1;
+	    break;
+	case '*':
+	    return -1;
+	    break;
+	case '/':
+	    return -1;
+	    break;
+	case '%':
+	    return -1;
+	    break;
+	case'^':
+	    return -1;
+	    break;
+	case')':
+	    return 0;
+	    break;
+	case'(':
+	    return 0;
+	    break;
+	default:
+	    return 1;
+	    break;
+
+    }
+}
+
+char** Paranthised_infix_to_Suffix(char** infix)
+{
+    int Rank=0,i=0,k=0,size;
+    char *temp1,*current;
+    char **st,c;
+    char r_o_b[]={')'};
+    char zero[]={'\0'};
+
+
+    while(*(infix[i++])!=')');
+    size=i;
+
+
+    char **polish;
+    if((polish=(char**)calloc(size,(sizeof(char*))))==NULL)
+    {
+	printf("Not enough memory!!!");
+	exit(-1);
+    }
+    if((temp1=(char*)calloc(10,(sizeof(char))))==NULL)
+    {
+	printf("Not enough memory!!!");
+	return NULL;
+    }
+    if((current=(char*)calloc(10,(sizeof(char))))==NULL)
+    {
+	printf("Not enough memory!!!");
+	return NULL;
+    }
+    if((st=(char**)calloc(100,(sizeof(char*))))==NULL)
+    {
+	printf("Not enough memory!!!");
+	return NULL;
+    }
+    i=0;
+
+    Initialize_Stack_c(st);
+
+
+    Push_c(st,r_o_b);
+    current=((infix[i++]));
+
+    while(*current!=*zero)
+    {
+	if(st==NULL)
 	{
 	    printf("1.Invalid expression\n");
-	    exit(0);
+	    return NULL;
 	}
-	while((input_precedence(current))<(stack_precedence(Topvalue_c(s))))
+	while(input_precedence(current)<(stack_precedence(Topvalue_c(st))))
 	{
-	    temp[0]=Pop_c(s);
-	    strcat(polish,temp);
-	    Rank=Rank+rank_para(temp);
-
+	    temp1=Pop_c(st);
+	    polish[k++]=temp1;
+	    Rank=Rank+rank(temp1);
 	    if(Rank<1)
 	    {
 		printf("2.Invalid expression\n");
+		return NULL;
 		exit(1);
 	    }
 	}
 
-	if((input_precedence(current))!=(stack_precedence(Topvalue_c(s))))
-	    Push_c(s,current);
+	if((input_precedence(current))!=(stack_precedence(Topvalue_c(st))))
+	    Push_c(st,current);
 	else
-	    Pop_c(s);
+	    Pop_c(st);
 
 
-	current=((infix[i]));
-	i++;
+	current=((infix[i++]));
+
     }
-
     if(Isempty()==0|| Rank!=1)
     {
 	printf("\n3.invalid expression\n");
-	exit(3);
+	exit(2);
     }
     else
 	return polish;
 }
+
+
+
+
+
+
+
+/*
+   char* Paranthised_infix_to_Suffix(char* infix)
+   {
+
+   int l=strlen(infix),Rank=0,i=0,j=0,garbage;
+   char *s,*polish,*temp,current,c;
+
+
+   infix[l]=')';
+   infix[l+1]='\0';
+
+
+   s=(char*)malloc(l);
+   polish=(char*)malloc(l);
+   temp=(char*)malloc(l);
+
+   Initialize_Stack_c(s);
+
+   Push_c(s,'(');
+
+   current=((infix[i]));
+   i++;
+
+   while(current!='\0')
+   {
+   if(s==NULL)
+   {
+   printf("1.Invalid expression\n");
+   exit(0);
+   }
+   while((input_precedence(current))<(stack_precedence(Topvalue_c(s))))
+   {
+   temp[0]=Pop_c(s);
+   strcat(polish,temp);
+   Rank=Rank+rank_para(temp);
+
+   if(Rank<1)
+   {
+   printf("2.Invalid expression\n");
+   exit(1);
+   }
+   }
+
+   if((input_precedence(current))!=(stack_precedence(Topvalue_c(s))))
+   Push_c(s,current);
+   else
+   Pop_c(s);
+
+
+   current=((infix[i]));
+   i++;
+   }
+
+   if(Isempty()==0|| Rank!=1)
+   {
+   printf("\n3.invalid expression\n");
+   exit(3);
+   }
+   else
+   return polish;
+   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    */
+*/
 int Evaluate_Suffix_Expression(char **s)
 {
     if (s==NULL)
@@ -749,7 +929,7 @@ int Evaluate_Suffix_Expression(char **s)
     {
 	temp=s[i];
 
-	if (isdigit(*temp))
+	if (isdigit(*temp)  ||( ((temp[0]=='-')) &&(isdigit(temp[1]))) )
 	{
 	    t3=atoi(temp);
 	    Push(stack,t3);
@@ -758,59 +938,64 @@ int Evaluate_Suffix_Expression(char **s)
 	{
 	    t1=Pop(stack);
 	    t2=Pop(stack);
-	    switch(*temp)
+	    if((temp[0]=='-') && (isdigit(temp[1])) )
+		Push(stack,t2-t1);
+	    else
 	    {
-		case '+':
-		    Push(stack,t1+t2);
-		    break;
-		case '-':
-		    Push(stack,t2-t1);
-		    break;
-		case '*':
-		    Push(stack,t1*t2);
-		    break;
-		case'=':
-		    if(t1==t2)
-			Push(stack,truevar);
-		    else
-			Push(stack,falsevar);
-		    break;
-		case '<':
-		    if(t1>t2)
-			Push(stack,truevar);
-		    else
-			Push(stack,falsevar);
-		    break;
-		case'>':
-		    if(t1<t2)
-			Push(stack,truevar);
-		    else
-			Push(stack,falsevar);
-		    break;
-		case '/':
-		    if (t1==0)
-		    {
-			printf("Division by zero!!!\n");
-			return 0;
-		    }
-		    else
-			Push(stack,t2/t1);
-		    break;
-		case '^':
-		    Push(stack,power(t2,t1));
-		    break;
-		case '%':
-		    if (t1==0)
-		    {
-			printf("Undefined operation!\n");
-			return 0;
-		    }
-		    else
-			Push(stack,t2%t1);
-		    break;
-		default:
-		    printf("Operation not supported.\n");
-		    break;
+		switch(*temp)
+		{
+		    case '+':
+			Push(stack,t1+t2);
+			break;
+		    case '-':
+			Push(stack,t2-t1);
+			break;
+		    case '*':
+			Push(stack,t1*t2);
+			break;
+		    case'=':
+			if(t1==t2)
+			    Push(stack,truevar);
+			else
+			    Push(stack,falsevar);
+			break;
+		    case '<':
+			if(t1>t2)
+			    Push(stack,truevar);
+			else
+			    Push(stack,falsevar);
+			break;
+		    case'>':
+			if(t1<t2)
+			    Push(stack,truevar);
+			else
+			    Push(stack,falsevar);
+			break;
+		    case '/':
+			if (t1==0)
+			{
+			    printf("Division by zero!!!\n");
+			    return 0;
+			}
+			else
+			    Push(stack,t2/t1);
+			break;
+		    case '^':
+			Push(stack,power(t2,t1));
+			break;
+		    case '%':
+			if (t1==0)
+			{
+			    printf("Undefined operation!\n");
+			    return 0;
+			}
+			else
+			    Push(stack,t2%t1);
+			break;
+		    default:
+			printf("Operation not supported.\n");
+			break;
+		}
 	    }
 	}
 	i++;

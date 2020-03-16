@@ -16,14 +16,16 @@ void main()
     output=tokenizer_for_all(input);
 
     printf("Tokeneded:");
-    for(int j=0;*output[j];j++)
-	printf("%s ",(output[j]));
+    for(int j=0;output[j]!='\0';j++)
+	printf("%s\n",(output[j]));
     printf("\n");
 
+/*
+    output1=Paranthised_infix_to_Suffix(output);
 
-    output1=Infix_to_Suffix(output);
+
     printf("\nsuffix:");
-    for(int j=0;j<(2*(count1+1))-1;j++)
+    for(int j=0;j<3;j++)
 	printf("%s ",(output1[j]));
     printf("\n");
 
@@ -31,7 +33,7 @@ void main()
 
     printf("The value is :%d\n",value);
 
-
+*/
 
     free(input);
 

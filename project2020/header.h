@@ -35,10 +35,10 @@ int precedence(char* option);
 int rank(char* value);
 char** Infix_to_Suffix(char** infix);
 
-int input_precedence(char option);
-int stack_precedence(char option);
+int input_precedence(char* option);
+int stack_precedence(char* option);
 int rank_para(char* value);
-char* Paranthised_infix_to_Suffix(char* infix);
+char** Paranthised_infix_to_Suffix(char** infix);
 
 int Evaluate_Suffix_Expression(char **s);
 int power(int t1,int t2);
