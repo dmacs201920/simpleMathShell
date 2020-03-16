@@ -1,7 +1,10 @@
-		MATH SHELL: By Hari and chugh
+		MATH SHELL: By Hariharan and Abhiishek S Chugh
+				173209		171201		
+				III B.Sc. Mathematics (Honours)
 
 Pre-requisites for the project:
-1. Tokenizer
+1. Tokenizer - This function tokenizes the string entered by the user into individual tokens that are used by
+		other functions.
 2. Knowledge of Fork, Wait, EXEC Family
 3. String Parsing and related functions
 

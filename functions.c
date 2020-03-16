@@ -114,6 +114,8 @@ char* check_for_pipes(char **s)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int precedence(char *option)
 {
+	if((option[0]=='-') && (isdigit(option[1])) )
+		return 5;
 	switch(*option)
 	{
 		case '=':
@@ -154,6 +156,8 @@ int precedence(char *option)
 
 int rank(char *value)
 {
+	if((value[0]=='-') && (isdigit(value[1])) )
+	return 1;
 	switch(*value)
 	{
 		case '=':
@@ -291,7 +295,7 @@ double Evaluate_Suffix_Expression(char **s)
 	for (int i=0;*s[i]!='#';i++)
 	{
 
-		if (isdigit(*s[i]))
+		if (isdigit(*s[i])||( (s[i][0]=='-') && (isdigit(s[i][1]) )))
 		{
 			t3=atof(s[i]);
 			Push(stack,(double)t3);
@@ -300,60 +304,65 @@ double Evaluate_Suffix_Expression(char **s)
 		{
 			t1=Pop(stack);
 			t2=Pop(stack);
-			switch(*s[i])
+			if((s[i][0]=='-') && (isdigit(s[i][1])) )
+				Push(stack,t2-t1);
+			else
 			{
-				case '+':
-					Push(stack,t1+t2);
-					break;
-				case '-':
-					Push(stack,t2-t1);
-					break;
-				case '*':
-					Push(stack,t1*t2);
-					break;
-				case '/':
-					if (t1==0)
-					{
-						printf("Division by zero!!!\n");
+				switch(*s[i])
+				{
+					case '+':
+						Push(stack,t1+t2);
+						break;
+					case '-':
+						Push(stack,t2-t1);
+						break;
+					case '*':
+						Push(stack,t1*t2);
+						break;
+					case '/':
+						if (t1==0)
+						{
+							printf("Division by zero!!!\n");
+							exit(-1);
+						}
+						else
+							Push(stack,t2/t1);
+						break;
+					case '^':
+						Push(stack,power(t2,t1));
+						break;
+					case '%':
+						if (t1==0)
+						{
+							printf("Undefined operation!\n");
+							exit(-1);
+						}
+						else
+							Push(stack,(int)t2 %(int)t1);
+						break;
+					case '=':
+						if (t1==t2)
+							Push(stack,truevar);
+						else 
+							Push(stack,falsevar);
+						break;
+					case '<':
+						if (t1>t2)
+							Push(stack,truevar);
+						else 
+							Push(stack,falsevar);
+						break;
+					case'>':
+						if (t1<t2)
+							Push(stack,truevar);
+						else
+							Push(stack,falsevar);
+						break;
+					default:
+						printf("Operation not supported.\n");
 						exit(-1);
-					}
-					else
-						Push(stack,t2/t1);
-					break;
-				case '^':
-					Push(stack,power(t2,t1));
-					break;
-				case '%':
-					if (t1==0)
-					{
-						printf("Undefined operation!\n");
-						exit(-1);
-					}
-					else
-						Push(stack,(int)t2 %(int)t1);
-					break;
-				case '=':
-					if (t1==t2)
-						Push(stack,truevar);
-					else 
-						Push(stack,falsevar);
-					break;
-				case '<':
-					if (t1>t2)
-						Push(stack,truevar);
-					else 
-						Push(stack,falsevar);
-					break;
-				case'>':
-					if (t1<t2)
-						Push(stack,truevar);
-					else
-						Push(stack,falsevar);
-					break;
-				default:
-					printf("Operation not supported.\n");
-					exit(-1);
-					break;
+						break;
+				}
 			}
 		}
 
