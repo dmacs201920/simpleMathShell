@@ -206,7 +206,6 @@ char** Infix_to_Suffix(char** infix)
 
 	while(*(infix[j++])!='#');
 
-	//s=(char**)malloc(25*(sizeof(char*)));
 	if((s=(char**)calloc(25,(sizeof(char*))))==NULL)
 	{
 		printf("Not enough memory!!!");
@@ -552,30 +551,47 @@ void freeTokenizer(char **t)
 
 dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 {
-	dyna_var *t=head,*temp=(dyna_var *)calloc(1,sizeof(dyna_var));
-	
+	dyna_var *t=head,*temp=(dyna_var *)calloc(1,sizeof(dyna_var)),*temp1;
+	int l=strlen(x),m=strlen(value);
 	if (!((65<=*x&&*x<=90)||(97<=*x&&*x<=122)))
 	{
 		printf("Enter only characters for defining variables!\nVariable: %s not defined\n",x);
 		exit(-1);
 	}
-	
-	int l=strlen(x),m=strlen(value);
 
-	temp->var=malloc(l);
-	temp->value=malloc(m);
-	strcpy(temp->var,x);
-	strcpy(temp->value,value);
-	
-	temp->next=NULL;
-	if (head==NULL)
-		return temp;
-	else 
+	if ((temp1=findDynaVariable(head,x))!=NULL)
 	{
-		temp->next=head;
-		return temp;
-	}
+		temp1->value=realloc(temp1->value,m);
+		strcpy(temp1->value,value);
+		temp1->next=NULL;
+		if (head==NULL)
+			return temp1;
+		else 
+		{
+			temp1->next=head;
+			return temp1;
+		}
 
+	}
+	else
+	{
+
+
+
+		temp->var=malloc(l);
+		temp->value=malloc(m);
+		strcpy(temp->var,x);
+		strcpy(temp->value,value);
+
+		temp->next=NULL;
+		if (head==NULL)
+			return temp;
+		else 
+		{
+			temp->next=head;
+			return temp;
+		}
+	}
 
 }
 
