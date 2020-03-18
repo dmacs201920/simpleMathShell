@@ -53,6 +53,7 @@ typedef struct dyna_var
 	char *var;
 	char *value;
 	struct dyna_var *next;
+	struct dyna_var *prev;
 } dyna_var;
 dyna_var* dynamicallydeclare(dyna_var *,char *,char *);
 void free_dyna_variables(dyna_var *);

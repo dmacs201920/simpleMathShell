@@ -4,98 +4,6 @@
 					   -III B.Sc. Mathematics (Honours)
 		*/
 #include"functionheader.h"
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*int top,n;
-void Initialize_Stack_c(char **a)
-{
-	top=-1;
-}
-void Push_c(char **s, char *x)
-{
-	top++;
-	if (Isfull()==0)
-		s[top]=x;
-	else 
-		Stackoverflow();
-}
-
-char* Pop_c(char **s)
-{
-	if (Isempty()==0)
-		return s[top--];
-	else 
-		Stackunderflow();
-}
-
-char* Topvalue_c(char**s)
-{
-	if (Isempty()==1)
-		return 0;
-	else 
-		return s[top];
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Initialize_Stack(double *a)
-{
-	top=-1;
-}
-void Push (double *s, double x)
-{
-	top++;
-	if (Isfull()==0)
-		s[top]=x;
-	else 
-		Stackoverflow();
-}
-
-double Pop (double *s)
-{
-	if (Isempty()==0)
-		return s[top--];
-	else 
-		Stackunderflow();
-}
-
-
-double Topvalue(double*s)
-{
-	if (Isempty()==1)
-		return 0;
-	else 
-		return s[top];
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int Isfull()
-{
-	if(top==n-1)
-		return 1;
-	else 
-		return 0;
-}
-
-
-int Isempty()
-{
-	if (top==-1)
-		return 1;
-	else 
-		return 0;
-}
-
-
-void Stackoverflow()
-{
-	printf("Stack is overflowing!!!\n");
-}
-
-
-void Stackunderflow()
-{
-	printf("Stack is empty!!!\n");
-}
-*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +193,6 @@ double Evaluate_Suffix_Expression(char **s)
 		return 0;
 	bool truevar=true, falsevar=false;
 	register int i=0;
-	//char *temp;
 	register double t1,t2,t3;
 	double *stack;
 	if((stack=(double*)malloc(50*sizeof(double)))==NULL)
@@ -563,11 +470,13 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 	{
 		temp1->value=realloc(temp1->value,m);
 		strcpy(temp1->value,value);
-		temp1->next=NULL;
-		if (head==NULL)
+		
+		if (head==temp1)
 			return temp1;
 		else 
 		{
+			temp1->prev->next=temp1->next;
+			temp1->next->prev=temp1->prev;
 			temp1->next=head;
 			return temp1;
 		}
@@ -575,20 +484,18 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 	}
 	else
 	{
-
-
-
 		temp->var=malloc(l);
 		temp->value=malloc(m);
 		strcpy(temp->var,x);
 		strcpy(temp->value,value);
-
+		temp->prev=NULL;
 		temp->next=NULL;
 		if (head==NULL)
 			return temp;
 		else 
 		{
 			temp->next=head;
+			head->prev=temp;
 			return temp;
 		}
 	}
