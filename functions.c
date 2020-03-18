@@ -1,4 +1,8 @@
-
+		/*
+		 * MATH SHELL: Written by Hariharan and Abhiishek S Chugh
+					   -173209	-171201		
+					   -III B.Sc. Mathematics (Honours)
+		*/
 #include"functionheader.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int top,n;
@@ -432,7 +436,7 @@ char** tokenizer(char *s)
 	t=calloc(word,sizeof(char*));
 	t[0]=calloc(1,strlen(s));
 	strcpy(t[0],s);
-	for(i=1;i<l;i++)
+	for(i=0;i<l;i++)
 	{
 		if(s[i]=='\0')
 		{
@@ -444,9 +448,10 @@ char** tokenizer(char *s)
 	return t;
 }
 
-int check_for_inbuilt_commands(char *a)//function command "vi -O -y main.c functions.c"
+int check_for_inbuilt_commands(char *a)		//-> Takes input as a string and checks for commands that have been limited by us.
+						//-> For eg. "vi -O -y main.c functions.c"
 {
-	char s[][16]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","quit","exit"};
+	char s[][16]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","exi","qui"};
 	for (int i=0;i<16;i++)
 		if (strncmp(s[i],a,strlen(s[i]))==0)
 			return 1;
@@ -466,8 +471,10 @@ char** tokenizer_for_all(char *a)
 			count++;
 
 	char *s=malloc(l+(2*count+1)+2);
+	
 
-	for (int i=0;i<l;i++)
+	s[0]=a[0];
+	for (int i=1;i<l;i++)
 	{
 		if ((!isalnum(a[i])&&(a[i]!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 		{
@@ -487,11 +494,33 @@ char** tokenizer_for_all(char *a)
 
 	char **t=(char**)calloc(2*count+2,sizeof(char*));
 	k=1;
-	t[0]=s;
-	for(int i=0;k<(2*count+2);i++)
-		if (s[i]=='\0')
-			t[k++]=(s+i+1);
+	/*if (s[0]=='\0')
+	{
+		t[0]=&s[1];
+		for(int i=1;k<(2*count+2);i++)
+			if (s[i]=='\0')
+			{	
+				t[k]=malloc(strlen(s+i+1));
+				strcpy(t[k++],(s+i+1));
+			}
 
+	}*/
+	//else if (s[0]!='\0')
+	//{
+		t[0]=malloc(strlen(s));
+		strcpy(t[0],s);
+		for(int i=0;k<(2*count+2);i++)
+			if (s[i]=='\0')
+				t[k++]=(s+i+1);
+			/*{	
+				t[k]=malloc(strlen(s+i+1)+1);
+				strcpy(t[k],(s+i+1));
+				//t[k][strlen(s+i+1)]='\0';
+				k++;
+			}*/
+	//}
+	
+	//free(s);
 	int numb=0;
 
 	for(int i=0;i<(2*count+2);i++)
@@ -567,7 +596,7 @@ dyna_var* dynamicallydeclare(dyna_var *head,char *x,char *value)
 
 }
 
-int operations(dyna_var *head,char **s)
+double operations(dyna_var *head,char **s)
 {
 	dyna_var *temp;
 	register double t1,t2,t3;
@@ -587,7 +616,7 @@ int operations(dyna_var *head,char **s)
 		{
 			if ((temp=findDynaVariable(head,x))!=NULL)
 			{
-				t3=strtof(temp->value,NULL);
+				t3=atof(temp->value);
 				Push(stack,t3);
 			}
 		}
@@ -652,7 +681,7 @@ int operations(dyna_var *head,char **s)
 			}
 		}
 	}
-	register int result=stack[0];
+	register double result=stack[0];
 	free(stack);
 	return result;
 }

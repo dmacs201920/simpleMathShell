@@ -1,4 +1,8 @@
-
+		/*
+		 * MATH SHELL: Written by Hariharan and Abhiishek S Chugh
+					   -173209	-171201		
+					   -III B.Sc. Mathematics (Honours)
+		*/
 
 #include"functionheader.h"
 
@@ -40,7 +44,7 @@ void main()
 					if (j==0)
 					{
 						execlp(t[0],t[0],t[1],t[2],t[3],t[4],t[5],NULL);
-						perror("execlp");
+						//perror("execlp");
 					}
 					break;
 				case 2:
@@ -55,21 +59,13 @@ void main()
 					else
 						display_dynamically_declared(head);
 					break;
-				case 5:
-					j=fork();
-					if (j==0)
-					{	
-						execlp("grep","grep",w,NULL);
-						//perror("execlp");
-					}
-					break;
 				case 6:
 					if ((j=fork())==0)
 					{
 						w=Infix_to_Suffix(t);
 						double exp=Evaluate_Suffix_Expression(w);
 						printf("~/cherry_shell/:)/>>> %.3lf\n",exp);
-						perror("Suffix Evaluation");
+						//perror("Suffix Evaluation");
 						exit(1);
 					}
 					break;
@@ -82,7 +78,7 @@ void main()
 						w=Infix_to_Suffix(t);
 						double result=operations(head,w);
 						printf("~/cherry_shell/:)/>>> %.3lf\n",result);
-						perror("Variable Suffix Evaluation");
+						//perror("Variable Suffix Evaluation");
 						exit(1);
 					}
 					break;

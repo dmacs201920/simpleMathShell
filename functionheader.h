@@ -1,3 +1,9 @@
+		/*
+		 * MATH SHELL: Written by Hariharan and Abhiishek S Chugh
+					   -173209	-171201		
+					   -III B.Sc. Mathematics (Honours)
+		*/
+
 #include<ctype.h>
 #include<stdlib.h>
 #include<stdio.h>
@@ -53,7 +59,7 @@ void free_dyna_variables(dyna_var *);
 void display_dynamically_declared(dyna_var *);
 dyna_var* findDynaVariable(dyna_var *,char *);
 dyna_var* callDynaVariable(dyna_var *,char *);
-int operations(dyna_var *,char **);
+double operations(dyna_var *,char **);
 
 
 typedef struct dll
