@@ -1,8 +1,14 @@
-chari: main.o functions.o 
-	gcc -o $@ main.o functions.o -lreadline -lm
+chari: main.o functions.o characterStack.o doubleStack.o 
+	gcc -o $@ main.o functions.o characterStack.o doubleStack.o -lreadline -lm
 
 main.o: main.c functionheader.h 
 	gcc -c -g main.c
+
+doubleStack.o: doubleStack.c functionheader.h
+	gcc -c -g doubleStack.c
+
+characterStack.o: characterStack.c functionheader.h
+	gcc -c -g characterStack.c
 
 hello:	trial.o functions.o
 	gcc -o $@ functions.o -lreadline

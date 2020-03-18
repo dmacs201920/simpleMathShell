@@ -62,18 +62,4 @@ dyna_var* callDynaVariable(dyna_var *,char *);
 double operations(dyna_var *,char **);
 
 
-typedef struct dll
-{
-	int fp_size;
-	int fp_position;
-	struct dll *prev;
-	struct dll *next;
-} dll;
-dll* createnode(int,int);
-void display(dll *);
-int count(dll *);
-dll* insert(dll *,int,int);
-dll* returnfromend(dll *);
-void deletelist(dll *);
-
 

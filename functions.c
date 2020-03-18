@@ -5,7 +5,7 @@
 		*/
 #include"functionheader.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int top,n;
+/*int top,n;
 void Initialize_Stack_c(char **a)
 {
 	top=-1;
@@ -95,7 +95,7 @@ void Stackunderflow()
 {
 	printf("Stack is empty!!!\n");
 }
-
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,13 +387,14 @@ int check_function_call(char **s)
 	int i=check_for_inbuilt_commands(s[0]);
 	if ((strcmp(s[0],"exit")==0)||(strcmp(s[0],"quit")==0))
 		return 0;
+	if (strcmp(s[0],"all")==0)
+		if (strcmp(s[1],"variables")==0)
+			return 4;
 	if (i)
 		return 1;
 	if (strcmp(s[0],"dir")==0)
 		return 2;
-	if (strcmp(s[0],"all")==0)
-		if (strcmp(s[2],"variables")==0)
-			return 4;
+	
 	if (s[1]&&*s[1]=='=')
 		if (48<=(*s[2])&&(*s[2])<=56)
 			return 3;
@@ -455,8 +456,8 @@ char** tokenizer(char *s)
 int check_for_inbuilt_commands(char *a)		//-> Takes input as a string and checks for commands that have been limited by us.
 						//-> For eg. "vi -O -y main.c functions.c"
 {
-	char s[][18]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","exit","quit"};
-	for (int i=0;i<18;i++)
+	char s[][19]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","exit","quit","all"};
+	for (int i=0;i<19;i++)
 		if (strncmp(s[i],a,strlen(s[i]))==0)
 			return 1;
 	return 0;
@@ -476,9 +477,7 @@ char** tokenizer_for_all(char *a)
 
 	char *s=malloc(l+(2*count+1)+2);
 	
-
-	s[0]=a[0];
-	for (int i=1;i<l;i++)
+	for (int i=0;i<l;i++)
 	{
 		if ((!isalnum(a[i])&&(a[i]!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
 		{
@@ -498,33 +497,13 @@ char** tokenizer_for_all(char *a)
 
 	char **t=(char**)calloc(2*count+2,sizeof(char*));
 	k=1;
-	/*if (s[0]=='\0')
-	{
-		t[0]=&s[1];
-		for(int i=1;k<(2*count+2);i++)
-			if (s[i]=='\0')
-			{	
-				t[k]=malloc(strlen(s+i+1));
-				strcpy(t[k++],(s+i+1));
-			}
-
-	}*/
-	//else if (s[0]!='\0')
-	//{
+	
 		t[0]=malloc(strlen(s));
 		strcpy(t[0],s);
 		for(int i=0;k<(2*count+2);i++)
 			if (s[i]=='\0')
 				t[k++]=(s+i+1);
-			/*{	
-				t[k]=malloc(strlen(s+i+1)+1);
-				strcpy(t[k],(s+i+1));
-				//t[k][strlen(s+i+1)]='\0';
-				k++;
-			}*/
-	//}
-	
-	//free(s);
+		
 	int numb=0;
 
 	for(int i=0;i<(2*count+2);i++)
@@ -695,7 +674,7 @@ dyna_var* callDynaVariable(dyna_var*head,char *x)
 {
 	if (head==NULL)
 	{
-		printf("Undefined Variable\n");
+		printf("No variables defined!!!\n");
 		return NULL;
 	}
 
@@ -709,13 +688,11 @@ dyna_var* findDynaVariable(dyna_var *head,char *x)
 	dyna_var *temp=head;
 	while(temp && strcmp(temp->var,x)!=0)
 		temp=temp->next;
-	if (temp==NULL)
-	{
-		printf("Variable: %s not found\n",x);
-		exit(-1);
-	}
-	else
+	if (temp!=NULL)
 		return temp;
+	else
+		return NULL;
+	
 }
 
 void free_dyna_variables(dyna_var *head)

@@ -64,7 +64,7 @@ void main()
 					{
 						w=Infix_to_Suffix(t);
 						double exp=Evaluate_Suffix_Expression(w);
-						printf("~/cherry_shell/:)/>>> %.3lf\n",exp);
+						printf("~/cherry_shell/:)/>>> %.2lf\n",exp);
 						//perror("Suffix Evaluation");
 						exit(1);
 					}
@@ -77,7 +77,7 @@ void main()
 					{
 						w=Infix_to_Suffix(t);
 						double result=operations(head,w);
-						printf("~/cherry_shell/:)/>>> %.3lf\n",result);
+						printf("~/cherry_shell/:)/>>> %.2lf\n",result);
 						//perror("Variable Suffix Evaluation");
 						exit(1);
 					}
@@ -85,14 +85,14 @@ void main()
 
 				case 0:
 					free_dyna_variables(head);
-					//freeTokenizer(t);
+					freeTokenizer(t);
 					exit(1);
 					break;
 				default:
 					printf("\nFunction not supported!!!\n");
 					break;
 			}
-		//freeTokenizer(t);
+		freeTokenizer(t);
 	
 		}
 	}
