@@ -385,6 +385,8 @@ int check_function_call(char **s)
 {
 	char t[]={'+','-','*','/','%','(',')','>','<'};
 	int i=check_for_inbuilt_commands(s[0]);
+	if ((strcmp(s[0],"exit")==0)||(strcmp(s[0],"quit")==0))
+		return 0;
 	if (i)
 		return 1;
 	if (strcmp(s[0],"dir")==0)
@@ -395,8 +397,7 @@ int check_function_call(char **s)
 	if (s[1]&&*s[1]=='=')
 		if (48<=(*s[2])&&(*s[2])<=56)
 			return 3;
-	if ((strcmp(s[0],"exit")==0)||(strcmp(s[0],"quit")==0))
-		return 0;
+	
 	if (48<=(*s[0])&&(*s[0])<=57)
 		return 6;
 	if ((95<=(*s[0])&&(*s[0]<=122))||(65<=(*s[0])&&(*s[0])<=90))
@@ -436,12 +437,15 @@ char** tokenizer(char *s)
 	t=calloc(word,sizeof(char*));
 	t[0]=calloc(1,strlen(s));
 	strcpy(t[0],s);
-	for(i=0;i<l;i++)
+	if (word>1)
 	{
-		if(s[i]=='\0')
+		for(i=0;i<l;i++)
 		{
-			t[k]=calloc(1,strlen(&s[i+1]));
-			strcpy(t[k++],&s[i+1]);
+			if(s[i]=='\0')
+			{
+				t[k]=calloc(1,strlen(&s[i+1]));
+				strcpy(t[k++],&s[i+1]);
+			}
 		}
 	}
 	free(s);
@@ -451,8 +455,8 @@ char** tokenizer(char *s)
 int check_for_inbuilt_commands(char *a)		//-> Takes input as a string and checks for commands that have been limited by us.
 						//-> For eg. "vi -O -y main.c functions.c"
 {
-	char s[][16]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","exi","qui"};
-	for (int i=0;i<16;i++)
+	char s[][18]={"vi","dir","alias","mkdir","grep","cd","cp","cat","wc","gdb","gcc","rm","make","chmod","ls","./","exit","quit"};
+	for (int i=0;i<18;i++)
 		if (strncmp(s[i],a,strlen(s[i]))==0)
 			return 1;
 	return 0;
