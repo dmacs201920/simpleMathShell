@@ -42,7 +42,17 @@ A novice implementation of a simple math Shell
 
 	infixToSuffix.c -> This file contains the functions to convert the entered 
 			   expression (in the form of tokens) into a Suffix expression.
-			   For eg. <99><+><88><*><77></><66> --> <99><88><77><66></><*><+>
+			   Sample:
+			   	<99><+><88><*><77></><66> --> <99><88><77><66></><*><+>
+
+			   For eg.
+			   	    ~/cherry_shell/:)/>>> 3+4
+			   	    7.00
+			    	    ~/cherry_shell/:)/>>> 3+4*6
+				    27.00
+				    ~/cherry_shell/:)/>>> 27.3+4.6*7/2
+				    43.40
+				    ~/cherry_shell/:)/>>> 
 
 	dynamicDeclare.c -> This file contains the functions that dynamically declare variables
 			    in the shell. The input is again a tokenized input which stores all 
@@ -51,16 +61,23 @@ A novice implementation of a simple math Shell
 			    Moreover, for the variables that are defined by the User, the User
 			    can then opt to perform arithematic operations with those declared 
 			    variables too.
-			    For eg. ~/cherry_shell:)/>>> x=3
-			    	    ~/cherry_shell:)/>>> all variables
+			    For eg.
+			            ~/cherry_shell/:)/>>> x=3
+			    	    ~/cherry_shell/:)/>>> all variables
 				    x=3
-				    ~/cherry_shell:)/>>> y=4
-				    ~/cherry_shell:)/>>> all variables
+				    ~/cherry_shell/:)/>>> y=4
+				    ~/cherry_shell/:)/>>> all variables
 				    y=4
 				    x=3
-				    ~/cherry_shell:)/>>> x+y
+				    ~/cherry_shell/:)/>>> x+y
 				    7
-				    ~/cherry_shell:)/>>> 
+				    ~/cherry_shell/:)/>>> x=9
+				    ~/cherry_shell/:)/>>> all variables
+				    x=9
+				    y=4
+				    ~/cherry_shell/:)/>>> 
+
+	
 	
 	main.c -> This is the main file has the program written.
 
