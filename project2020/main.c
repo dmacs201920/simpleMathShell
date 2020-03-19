@@ -13,6 +13,10 @@ void main()
 	if(!isalnum(input[i]) ||input[i]==' ' ||input[i]=='\n'|| input[i]=='\t')
 	    count1++;
 
+    
+
+    
+
     output=tokenizer_for_all(input);
 
     printf("Tokeneded:");
@@ -20,15 +24,15 @@ void main()
 	printf("%s\n",(output[j]));
     printf("\n");
 
-/*
+
     output1=Paranthised_infix_to_Suffix(output);
 
 
     printf("\nsuffix:");
-    for(int j=0;j<3;j++)
+    for(int j=0;output1[j];j++)
 	printf("%s ",(output1[j]));
     printf("\n");
-
+/*
     value=Evaluate_Suffix_Expression(output1);
 
     printf("The value is :%d\n",value);

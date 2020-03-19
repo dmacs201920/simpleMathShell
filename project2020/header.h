@@ -9,7 +9,7 @@
 #include<sys/types.h>
 #include<sys/wait.h>
 #include<stdbool.h>
-int top,n;
+int top,n,size1;
 
 
 
@@ -27,6 +27,8 @@ int Isempty();
 void Stackoverflow();
 void Stackunderflow();
 
+int search(char *str1,char x);
+void remove_word(char *str1, char *str2);
 char** tokenizer(char *s);
 char** tokenizer_for_all(char *a);
 void  trim(char  *a);

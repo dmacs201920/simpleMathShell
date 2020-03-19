@@ -134,7 +134,7 @@ void  trim(char  *a)
 	    continue;
 
 
-	p=a+j+1;
+	p=a+j;
 	q=a+k;
 
 	while(1)
@@ -266,100 +266,201 @@ temp[++k]=(s+i+1);
 return tokened;
 }
 
-*/
+    */
+int match(char *A,char* B)
+{	
+    int L,l;
+
+    L=strlen(A);
+    l=strlen(B);
+
+    for(int i=0,j;i<L;i++)
+    {
+	for(j=0;j<l;j++)
+	    if(A[i+j]!=B[j])
+		break;
+
+	if (j==l)
+	    return i+1;
+    }
+    return -1;	
+}
+
+
+void remove_word(char *str1, char *str2)
+{
+    int i,l,L;
+    L=strlen(str1);
+    l=strlen(str2);
+    char *p,*q;
+
+    while((i=match(str1,str2))!=-1)
+    {
+	p=str1+i-1;
+	q=str1+i+l-1;
+	while(1)
+	{
+	    *p=*q;
+	    if (*p=='\0')
+		break;
+	    ++p;
+	    ++q;
+	}
+    }
+    printf("%s\n",str1);
+}
+
+
+int search(char *str1,char x)
+{
+    int i;
+
+    for(i=0;str1[i]!='\0';i++)
+    {
+	if(str1[i]==x)
+	    return i;
+    }
+    return -1;
+}
+
 
 char** tokenizer_for_all(char *a)
 {
-    int l=strlen(a),k=0,count=0,flag=0;
+
+    int l=strlen(a),k=0,count=0,flag=0,coun=0,c,p=0,count1=0,count2=0,x;
+    char *s,*a1,*open_brac,**tokened;
+
+    open_brac=malloc(sizeof(char));
+    open_brac[0]=')';
+
+
 
     //	if (check_for_inbuilt_commands(a))
     //		return tokenizer(a);
+    //
+    //
 
+    trim(a);
 
     for(int w=0;w<l;w++)
     {
 	if((a[w]=='(') || (a[w]==')'))
-	    flag=1;
+	{   flag=1;
 	break;
-    }
-
-
-    for (int i=0;i<l;i++)
-	if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
-	    count++;
-
-    char *s=malloc(l+(2*count+1)+2);
-
+	}
+    }    
 
     for (int i=0;i<l;i++)
     {
-	if (!isalnum(a[i])||a[i]==' '||a[i]=='\n'||a[i]=='\t')
-	{
-	    s[k++]='\0';
-	    s[k++]=a[i];
-	    s[k++]='\0';
-	}
-	else if((a[i]==')') || (a[i]=='('))
-	{
-	    s[k++]='\0';
-	    s[k++]=a[i];
-	}
-	else
-	{	
-	    s[k++]=a[i];
-	}
+	if (((!isalnum(a[i]))&&((a[i])!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+	    count++;
+	if((a[i]==')') || (a[i]=='('))
+	    coun++;
     }
-
 
     if(flag==0)
     {
+	s=malloc(l+(2*count+1)+2);
 
-    s[k++]='\0';
-    s[k++]='#';
-    s[k++]='\0';
+	for (int i=0;i<l;i++)
+	{
+	    if (((!isalnum(a[i]))&&((a[i])!='.')||((!isalnum(a[i])&&(a[i])!='('))||((!isalnum(a[i]))&&(a[i])!=')'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+	    {
+		s[k++]='\0';
+		s[k++]=a[i];
+		s[k++]='\0';
+	    }
+	    else
+		s[k++]=a[i];
+	}
+
+	s[k++]='\0';
+	s[k++]='#';
+	s[k++]='\0';
+
+	tokened=(char**)calloc(2*count+2,sizeof(char*));
+	k=1;
+	if (s[0]=='\0')
+	    tokened[0]=&s[1];
+	else
+	    tokened[0]=s;
+	for(int i=0;k<(2*count+2);i++)
+	    if (s[i]=='\0')
+		tokened[k++]=(s+i+1);
     }
+
+
+
+
+
+
+
     if(flag==1)
     {
-    s[k++]='\0';
-    s[k++]=')';
-    s[k++]='\0';
+	s=malloc(l+(2*(count-coun))+coun+3);
+	for (int i=0;i<l;i++)
+	{
+	    if (((!isalnum(a[i]))&&((a[i])!='.'))||a[i]==' '||a[i]=='\n'||a[i]=='\t')
+		if ((!isalnum(a[i+1]))&&(a[i]+1!='.'))//(a[i+1]=='(')
+		{
+			s[k++]='\0';
+			s[k++]=a[i];
+			s[k++]='\0';
+			i++;
+			s[k++]=a[i];
+			s[k++]='\0';
+			continue;
+		}
+		else
+		{
+		    s[k++]='\0';
+		    s[k++]=a[i];
+		    s[k++]='\0';
+		}
+	    /*else if(a[i]=='(')
+	    {
+		s[k++]=a[i];
+		s[k++]='\0';
+	    }*/
+	    else if(a[i]==')')
+	    {
+		s[k++]='\0';
+		s[k++]=a[i];
+	    }
+	    else
+		s[k++]=a[i];
+	}
+	s[k++]='\0';
+	s[k++]='#';
+	s[k++]='\0';
+
+	tokened=(char**)calloc(((2*(count-coun))+coun+2),sizeof(char*));
+	k=1;
+	if (s[0]=='\0')
+	    tokened[0]=&s[1];
+	else
+	    tokened[0]=s;
+	for(int i=0;k<(2*count+2);i++)
+	    if (s[i]=='\0')
+		tokened[k++]=(s+i+1);
+
     }
 
-    char **tokened=(char**)calloc(2*count+2,sizeof(char*));
-    k=1;
-    tokened[0]=s;
-    for(int i=0;k<(2*count+2);i++)
-	if (s[i]=='\0')
-	    tokened[k++]=(s+i+1);
+
 
     int numb=0;
 
-    for(int i=0;i<(2*count+2);i++)
+
+    char **t=calloc((((2*(count-coun))+coun+2)-(2*numb)),sizeof(char *));
+
+    for (int i=0;i<((((2*(count-coun))+coun+2))-(2*numb));i++)
     {
-	if(*(tokened[i])=='\0')
-	{
-	    numb++;
-	    char c=tokened[i+1][1];
-	    tokened[i+1][1]=tokened[i+1][0];
-	    tokened[i+1][0]=c;
-
-	    tokened[i+2]=&(tokened[i+1][1]);
-	    for(int j=0;(i+j)<2*count;j++)
-		tokened[i+j]=tokened[i+j+2];
-
-	}
-    }
-
-    char **t=calloc(((2*count+2)-(2*numb)),sizeof(char *));
-
-    for (int i=0;i<(2*count+2)-(2*numb);i++)
-    {
-	t[i]=(char*)calloc(strlen(tokened[i]),sizeof(char));
+	t[i]=(char*)calloc((strlen(tokened[i])),sizeof(char));
 	strcpy(t[i],tokened[i]);
     }
 
-    //free (tokened);
 
+	size1=((2*(count-coun))+coun+2)-(2*numb);
 
     return t;
 }
@@ -454,6 +555,8 @@ int rank(char* value)
 	    break;
     }
 }
+
+
 char** Infix_to_Suffix(char** infix)
 {
     int Rank=0,i=0,k=0,size;
@@ -556,168 +659,169 @@ char** Infix_to_Suffix(char** infix)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int input_precedence(char* option)
+int input_precedence(char* option1)
 {
-    if((option[0]=='-') && (isdigit(option[1])) )
-	return 9;
-    switch(*option)
+    //	if((option1[0]=='-') && (isdigit(option1[1])) )
+    //	    return 9;
+    switch(option1[0])
     {
-	case '=' :
-	    return 2;
-	    break;
-	case '<' :
-	    return 2;
-	    break;
-	case '>' :
-	    return 2;
-	    break;
+	/*	    case '=' :
+		    return 1;
+		    break;
+		    case '<' :
+		    return 1;
+		    break;
+		    case '>' :
+		    return 1;
+		    break;*/
 	case '+' :
-	    return 3;
-	    break;
-	case '-':
-	    return 3;
-	    break;
-	case '*':
-	    return 5;
-	    break;
-	case '/':
-	    return 5;
-	    break;
-	case '%':
-	    return 5;
-	    break;
-	case'^':
-	    return 8;
-	    break;
-	case '(':
-	    return 11;
-	    break;
-	case ')':
 	    return 1;
 	    break;
-
-	default:
+	case '-':
+	    return 1;
+	    break;
+	case '*':
+	    return 3;
+	    break;
+	case '/':
+	    return 3;
+	    break;
+	case '%':
+	    return 3;
+	    break;
+	case'^':
+	    return 6;
+	    break;
+	case '(':
 	    return 9;
 	    break;
-    }
+	//case '#':
+	//    return 9;
+	//    break;
+	case ')':
+	    return 0;
+	    break;
+	default:
+	    return 7;
+	}
 }
 
 /*
 
-int precedence(char* option)
-{
-    if((option[0]=='-') && (isdigit(option[1])) )
-	return 5;
-    switch(*option)
-    {
-	case '=' :
-	    return 1;
-	    break;
-	case '<' :
-	    return 1;
-	    break;
-	case '>' :
-	    return 1;
-	    break;
-	case '+' :
-	    return 2;
-	    break;
-	case '-':
-	    return 2;
-	    break;
-	case '*':
-	    return 3;
-	    break;
-	case '%':
-	    return 3;
-	    break;
-	case '/':
-	    return 3;
-	    break;
-	case '^':
-	    return 4;
-	    break;
-	case '#':
-	    return 0;
-	    break;
-	default:
-	    return 5;
-	    break;
-    }
+   int precedence(char* option)
+   {
+   if((option[0]=='-') && (isdigit(option[1])) )
+   return 5;
+   switch(*option)
+   {
+   case '=' :
+   return 1;
+   break;
+   case '<' :
+   return 1;
+   break;
+   case '>' :
+   return 1;
+   break;
+   case '+' :
+   return 2;
+   break;
+   case '-':
+   return 2;
+   break;
+   case '*':
+   return 3;
+   break;
+   case '%':
+   return 3;
+   break;
+   case '/':
+   return 3;
+   break;
+   case '^':
+   return 4;
+   break;
+   case '#':
+   return 0;
+   break;
+   default:
+   return 5;
+   break;
+   }
+   }
+
+   int rank(char* value)
+   {
+   if((value[0]=='-') && (isdigit(value[1])) )
+   return 1;
+   switch(*value)
+   {
+   case '=':
+   return -1;
+   break;
+   case '<':
+   return -1;
+   break;
+   case '>':
+   return -1;
+   break;
+   case '+':
+   return -1;
+   break;
+   case '-':
+   return -1;
+   break;
+   case '*':
+   return -1;
+   break;
+   case '^':
+   return -1;
+   break;
+case '%':
+return -1;
+break;
+case '/':
+return -1;
+break;
+default:
+return 1;
+break;
 }
 
-int rank(char* value)
-{
-    if((value[0]=='-') && (isdigit(value[1])) )
-	return 1;
-    switch(*value)
-    {
-	case '=':
-	    return -1;
-	    break;
-	case '<':
-	    return -1;
-	    break;
-	case '>':
-	    return -1;
-	    break;
-	case '+':
-	    return -1;
-	    break;
-	case '-':
-	    return -1;
-	    break;
-	case '*':
-	    return -1;
-	    break;
-	case '^':
-	    return -1;
-	    break;
-	case '%':
-	    return -1;
-	    break;
-	case '/':
-	    return -1;
-	    break;
-	default:
-	    return 1;
-	    break;
-    }
 
-
-   */
+    */
 int stack_precedence(char* option)
 {
-    if((option[0]=='-') && (isdigit(option[1])) )
-	return 10;
-    switch(*option)
+    //    if((option[0]=='-') && (isdigit(option[1])) )
+    //	return 10;
+    switch(option[0])
     {
 	case '+' :
-	    return 4;
-	    break;
-	case '-':
-	    return 4;
-	    break;
-	case '*':
-	    return 6;
-	    break;
-	case '%':
-	    return 6;
-	    break;
-	case '/':
-	    return 6;
-	    break;
-	case'^':
-	    return 7;
-	    break;
-	case '(':
 	    return 2;
 	    break;
-	case ')':
+	case '-':
+	    return 2;
+	    break;
+	case '*':
+	    return 4;
+	    break;
+	case '%':
+	    return 4;
+	    break;
+	case '/':
+	    return 4;
+	    break;
+	case'^':
+	    return 5;
+	    break;
+	case '(':
 	    return 0;
 	    break;
+	//case '#':
+	//    return 0;
+	//    break;
 	default:
-	    return 10;
+	    return 8;
 	    break;
 
     }
@@ -745,12 +849,6 @@ int rank_para(char* value)
 	case'^':
 	    return -1;
 	    break;
-	case')':
-	    return 0;
-	    break;
-	case'(':
-	    return 0;
-	    break;
 	default:
 	    return 1;
 	    break;
@@ -760,62 +858,76 @@ int rank_para(char* value)
 
 char** Paranthised_infix_to_Suffix(char** infix)
 {
-    int Rank=0,i=0,k=0,size;
+    int Rank=0,i=0,j=0,k=0,size;
     char *temp1,*current;
     char **st,c;
-    char r_o_b[]={')'};
-    char zero[]={'\0'};
+    char hash[]="#\0";
+//    char zero[]={'\0'};
+    char l_o_b[]="(\0";
+    char r_o_b[]=")\0";
 
 
-    while(*(infix[i++])!=')');
+    while(*(infix[i++])!='#');
+    i++;
+    char **infix1=calloc(i,sizeof(char *));
+    for (j=0; j<i-2 ;j++)
+	{
+		infix1[j]=malloc(strlen(infix[j]));
+		strcpy(infix1[j],infix[j]);
+	}
+    infix1[j]=malloc(strlen(r_o_b));
+    strcpy(infix1[j++],r_o_b);
+    infix1[j]=malloc(strlen(hash));
+    strcpy(infix1[j++],hash);
+    if (j==i)
+	{
+	    printf("Infix copied successfully!!!\n");
+	    for(int m=0;m<i;m++)
+		free(infix[m]);
+	}
+    else 
+
+	exit(-1);
+
+
+
     size=i;
 
-
     char **polish;
-    if((polish=(char**)calloc(size,(sizeof(char*))))==NULL)
+    if((polish=(char**)calloc(size1,(sizeof(char*))))==NULL)
     {
-	printf("Not enough memory!!!");
+	printf("Not enough memory!!!\n");
 	exit(-1);
     }
-    if((temp1=(char*)calloc(10,(sizeof(char))))==NULL)
+    if((st=(char**)calloc(25,(sizeof(char*))))==NULL)
     {
-	printf("Not enough memory!!!");
-	return NULL;
-    }
-    if((current=(char*)calloc(10,(sizeof(char))))==NULL)
-    {
-	printf("Not enough memory!!!");
-	return NULL;
-    }
-    if((st=(char**)calloc(100,(sizeof(char*))))==NULL)
-    {
-	printf("Not enough memory!!!");
-	return NULL;
+	printf("Not enough memory!!!\n");
+	exit(-1) ;
     }
     i=0;
 
     Initialize_Stack_c(st);
 
 
-    Push_c(st,r_o_b);
-    current=((infix[i++]));
+    Push_c(st,l_o_b);
+    current=((infix1[i++]));
 
-    while(*current!=*zero)
+    while(*current!=*hash)
     {
 	if(st==NULL)
 	{
-	    printf("1.Invalid expression\n");
-	    return NULL;
+	    printf("1.Invalid expression as stack popped off!!!\n");
+	    exit(-1);
 	}
 	while(input_precedence(current)<(stack_precedence(Topvalue_c(st))))
 	{
 	    temp1=Pop_c(st);
-	    polish[k++]=temp1;
+	    polish[k]=malloc(strlen(temp1));
+	    strcpy(polish[k++],temp1);
 	    Rank=Rank+rank(temp1);
 	    if(Rank<1)
 	    {
-		printf("2.Invalid expression\n");
-		return NULL;
+		printf("2.Invalid expression as rank of the expression is invalid!!!\n");
 		exit(1);
 	    }
 	}
@@ -826,16 +938,22 @@ char** Paranthised_infix_to_Suffix(char** infix)
 	    Pop_c(st);
 
 
-	current=((infix[i++]));
+	current=((infix1[i++]));
 
     }
-    if(Isempty()==0|| Rank!=1)
+
+  if(Isempty()==0|| Rank!=1)
     {
-	printf("\n3.invalid expression\n");
-	exit(2);
+	printf("3.invalid expression\n");
+	exit(-1);
     }
     else
+    {	
+	for(int m=0;m<j;m++)
+		free(infix1[m]);
+	free(infix);
 	return polish;
+    }
 }
 
 
