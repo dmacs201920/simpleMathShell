@@ -1,3 +1,10 @@
+		/*
+		 * MATH SHELL: Written by Hariharan and Abhiishek S Chugh
+					   -173209	-171201		
+					   -III B.Sc. Mathematics (Honours)
+		*/
+
+
 #include"functionheader.h"
 int top,n;
 void Initialize_Stack(double *a)
